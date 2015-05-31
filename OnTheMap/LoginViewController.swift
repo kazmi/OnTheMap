@@ -47,6 +47,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBAction func loginButtonAction(sender: AnyObject) {
 
         debugLabel.text = ""
+        self.view.endEditing(true)
         
         if emailTextField.text.isEmpty {
             debugLabel.text = "Email Empty"
