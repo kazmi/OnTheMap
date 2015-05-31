@@ -1,0 +1,67 @@
+//
+//  UdacityClient.swift
+//  OnTheMap
+//
+//  Created by Sulaiman Azhar on 5/31/15.
+//  Copyright (c) 2015 kazmi. All rights reserved.
+//
+
+import Foundation
+
+class UdacityClient {
+    
+    func authenticateWithCompletionHandler(email: String, password: String, completionHandler: (success: Bool, errorString: String?) -> Void) {
+    
+        /* Build the URL */
+        let urlString = "https://www.udacity.com/api/session"
+        let url = NSURL(string: urlString)!
+        
+        /* Configure the request */
+        let request = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        var jsonifyError: NSError? = nil
+        let jsonBody : [String:AnyObject] = ["udacity": ["username": email, "password": password]]
+        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
+        
+        /* Make the request */
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, respose, downloadError in
+            if let error = downloadError {
+                completionHandler(success: false, errorString: "Request Timed Out")
+            } else {
+                
+                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+                
+                /* Parse the data */
+                var parsingError: NSError? = nil
+                let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
+                    error: &parsingError) as! NSDictionary
+                
+                if let session = parsedJSON["session"] as? NSDictionary {
+                    completionHandler(success: true, errorString: nil)
+                } else {
+                    if let status = parsedJSON["status"] as? Int {
+                        if status == 403 {
+                            completionHandler(success: false, errorString: "Invalid Credentials")
+                        }
+                    }
+                }
+            }
+        }
+        
+        /* Start the request */
+        task.resume()
+
+    }
+    
+    class func sharedInstance() -> UdacityClient {
+        struct Singleton {
+            static var sharedInstance = UdacityClient()
+        }
+        
+        return Singleton.sharedInstance
+    }
+}

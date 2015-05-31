@@ -12,6 +12,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var debugLabel: UILabel!
     
     var tapRecognizer: UITapGestureRecognizer? = nil
     
@@ -39,6 +40,32 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         super.viewWillDisappear(animated)
         self.removeKeyboardDismissRecognizer()
         self.unsubscribeToKeyboardNotifications()
+    }
+    
+    //#MARK:- Login
+    
+    @IBAction func loginButtonAction(sender: AnyObject) {
+
+        debugLabel.text = ""
+        
+        if emailTextField.text.isEmpty {
+            debugLabel.text = "Email Empty"
+        } else if passwordTextField.text.isEmpty {
+            debugLabel.text = "Password Empty"
+        } else {
+            UdacityClient.sharedInstance().authenticateWithCompletionHandler(
+                emailTextField.text, password: passwordTextField.text) { (success, errorString) in
+                if success {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.debugLabel.text = "Logged In!"
+                    })
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.debugLabel.text = errorString
+                    })
+                }
+            }
+        }
     }
     
     //#MARK:- Text Field Delegate
