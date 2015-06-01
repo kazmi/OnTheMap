@@ -21,7 +21,14 @@ class SLTableViewController: UITableViewController {
     // MARK: - Logout
     
     func logoutButtonTouchUp() {
-        self.dismissViewControllerAnimated(true, completion: nil)
+
+        UdacityClient.sharedInstance().logoutWithCompletionHandler() { (success, errorString) in
+            if success {
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                })
+            }
+        }
     }
 
 }
