@@ -14,6 +14,7 @@
 		4C33DF961B192748006B09B8 /* OnTheMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C33DF951B192748006B09B8 /* OnTheMapTests.swift */; };
 		4C8700B01B1B59AB00AA716E /* IndentedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8700AF1B1B59AB00AA716E /* IndentedTextField.swift */; };
 		4C8700B31B1B9D3100AA716E /* UdacityClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8700B21B1B9D3100AA716E /* UdacityClient.swift */; };
+		4C8700BA1B1BEBD800AA716E /* SLTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8700B91B1BEBD800AA716E /* SLTableViewController.swift */; };
 		4C89BAF81B1AB5DF00894B5C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C89BAF71B1AB5DF00894B5C /* LoginViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +40,7 @@
 		4C33DF951B192748006B09B8 /* OnTheMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnTheMapTests.swift; sourceTree = "<group>"; };
 		4C8700AF1B1B59AB00AA716E /* IndentedTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndentedTextField.swift; sourceTree = "<group>"; };
 		4C8700B21B1B9D3100AA716E /* UdacityClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityClient.swift; sourceTree = "<group>"; };
+		4C8700B91B1BEBD800AA716E /* SLTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTableViewController.swift; sourceTree = "<group>"; };
 		4C89BAF71B1AB5DF00894B5C /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -153,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				4C89BAF71B1AB5DF00894B5C /* LoginViewController.swift */,
+				4C8700B91B1BEBD800AA716E /* SLTableViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -270,6 +273,7 @@
 				4C89BAF81B1AB5DF00894B5C /* LoginViewController.swift in Sources */,
 				4C33DF801B192748006B09B8 /* AppDelegate.swift in Sources */,
 				4C8700B01B1B59AB00AA716E /* IndentedTextField.swift in Sources */,
+				4C8700BA1B1BEBD800AA716E /* SLTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

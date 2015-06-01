@@ -58,7 +58,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 emailTextField.text, password: passwordTextField.text) { (success, errorString) in
                 if success {
                     dispatch_async(dispatch_get_main_queue(), {
-                        self.debugLabel.text = "Logged In!"
+                        
+                        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("StudentLocationsTabBar")
+                            as! UITabBarController
+                        self.presentViewController(controller, animated: true, completion: nil)
+                        
                     })
                 } else {
                     dispatch_async(dispatch_get_main_queue(), {
