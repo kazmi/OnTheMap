@@ -51,6 +51,13 @@ class SLTableViewController: UITableViewController {
         return cell
     }
     
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        /* show media url in default browser */
+        let studentInformation = students[indexPath.row]
+        let link = NSURL(string: studentInformation.mediaURL)!
+        UIApplication.sharedApplication().openURL(link)
+    }
+    
     // MARK: - Logout
     
     func logoutButtonTouchUp() {
