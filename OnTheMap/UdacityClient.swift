@@ -91,6 +91,45 @@ class UdacityClient {
         task.resume()
     }
     
+    func getStudentInformation(completionHandler: (result: [StudentInformation]?, error: NSError?) -> Void) {
+        
+        /* Build the URL */
+        let urlString = "https://api.parse.com/1/classes/StudentLocation"
+        let url = NSURL(string: urlString)!
+        
+        /* Configure the request */
+        let request = NSMutableURLRequest(URL: url)
+        request.addValue("ENTER_APP_ID_HERE", forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue("ENTER_REST_API_KEY_HERE", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        
+        /* Make the request */
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+            
+            if downloadError != nil {
+                completionHandler(result: nil, error: downloadError)
+            }
+            
+            /* Parse the data */
+            var parsingError: NSError? = nil
+            let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
+                options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
+            
+            /* Use the data */
+            if let results = parsedJSON.valueForKey("results") as? [[String : AnyObject]] {
+                var students = StudentInformation.studentInformationFromResults(results)
+                completionHandler(result: students, error: nil)
+            } else {
+                completionHandler(result: nil, error: NSError(domain: "student information parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getStudentInformation"]))
+            }
+            
+        }
+        
+        /* Start the request */
+        task.resume()
+        
+    }
+    
     class func sharedInstance() -> UdacityClient {
         struct Singleton {
             static var sharedInstance = UdacityClient()
@@ -98,4 +137,5 @@ class UdacityClient {
         
         return Singleton.sharedInstance
     }
+    
 }

@@ -10,12 +10,45 @@ import UIKit
 
 class SLTableViewController: UITableViewController {
 
+    var students: [StudentInformation] = [StudentInformation]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         /* Create and set the logout button */
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Plain, target: self, action: "logoutButtonTouchUp")
         
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        UdacityClient.sharedInstance().getStudentInformation { students, error in
+            if let students = students {
+                self.students = students
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.tableView.reloadData()
+                }
+            } else {
+                println(error)
+            }
+        }
+        
+    }
+    
+    // MARK: - Table View and Data Source Delegates
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.students.count
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("SLTableViewCell") as! UITableViewCell
+        let studentInformation = students[indexPath.row]
+        
+        cell.textLabel?.text = studentInformation.firstName + " " + studentInformation.lastName
+
+        return cell
     }
     
     // MARK: - Logout
