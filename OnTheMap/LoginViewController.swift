@@ -80,6 +80,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    //#MARK:- Sign Up
+    
+    @IBAction func signupButtonAction(sender: AnyObject) {
+        let app = UIApplication.sharedApplication()
+        app.openURL(NSURL(string: "https://www.udacity.com/account/auth#!/signin")!)
+    }
+    
     //#MARK:- Text Field Delegate
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
