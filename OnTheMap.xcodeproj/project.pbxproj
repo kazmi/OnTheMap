@@ -17,6 +17,8 @@
 		4C8700BA1B1BEBD800AA716E /* SLTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8700B91B1BEBD800AA716E /* SLTableViewController.swift */; };
 		4C8700BC1B1C72AA00AA716E /* StudentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8700BB1B1C72A900AA716E /* StudentInformation.swift */; };
 		4C8700C01B1D0D0500AA716E /* SLMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8700BF1B1D0D0500AA716E /* SLMapViewController.swift */; };
+		4C8700C21B1DD9F600AA716E /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8700C11B1DD9F600AA716E /* FBSDKCoreKit.framework */; };
+		4C8700C41B1DDD5300AA716E /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8700C31B1DDD5300AA716E /* FBSDKLoginKit.framework */; };
 		4C89BAF81B1AB5DF00894B5C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C89BAF71B1AB5DF00894B5C /* LoginViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +48,8 @@
 		4C8700BB1B1C72A900AA716E /* StudentInformation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentInformation.swift; sourceTree = "<group>"; };
 		4C8700BD1B1D040B00AA716E /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		4C8700BF1B1D0D0500AA716E /* SLMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLMapViewController.swift; sourceTree = "<group>"; };
+		4C8700C11B1DD9F600AA716E /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		4C8700C31B1DDD5300AA716E /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		4C89BAF71B1AB5DF00894B5C /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,6 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C8700C21B1DD9F600AA716E /* FBSDKCoreKit.framework in Frameworks */,
+				4C8700C41B1DDD5300AA716E /* FBSDKLoginKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +76,8 @@
 		4C33DF711B192747006B09B8 = {
 			isa = PBXGroup;
 			children = (
+				4C8700C31B1DDD5300AA716E /* FBSDKLoginKit.framework */,
+				4C8700C11B1DD9F600AA716E /* FBSDKCoreKit.framework */,
 				4C8700BD1B1D040B00AA716E /* MapKit.framework */,
 				4C33DF7C1B192748006B09B8 /* OnTheMap */,
 				4C33DF921B192748006B09B8 /* OnTheMapTests */,
@@ -410,6 +418,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = OnTheMap/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -420,6 +432,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = OnTheMap/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
