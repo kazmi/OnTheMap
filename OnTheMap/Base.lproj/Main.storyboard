@@ -186,6 +186,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="On The Map" id="zOJ-bv-h6R"/>
+                    <connections>
+                        <outlet property="mapView" destination="I3T-nz-yB2" id="kkd-hJ-49P"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xP0-PM-CQu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

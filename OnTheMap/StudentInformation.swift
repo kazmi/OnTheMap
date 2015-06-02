@@ -7,21 +7,23 @@
 //
 
 import Foundation
+import MapKit
 
 struct StudentInformation {
     var firstName: String
     var lastName: String
     var mediaURL: String
-    var latitude: Double
-    var longitude: Double
+    var latitude: CLLocationDegrees
+    var longitude: CLLocationDegrees
     
     /* Construct a StudentInformation from a dictionary */
     init(dictionary: [String : AnyObject]) {
         firstName = dictionary["firstName"] as! String
         lastName = dictionary["lastName"] as! String
         mediaURL = dictionary["mediaURL"] as! String
-        latitude = dictionary["latitude"] as! Double
-        longitude = dictionary["longitude"] as! Double
+        latitude = CLLocationDegrees(dictionary["latitude"] as! Double)
+        longitude = CLLocationDegrees(dictionary["longitude"] as! Double)
+        
     }
     
     /* Helper: Given an array of dictionaries, convert them to an array of StudentInformation objects */
