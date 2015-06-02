@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import FBSDKLoginKit
 
-class LoginViewController: UIViewController, UITextFieldDelegate {
+class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
 
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -78,6 +79,35 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 }
             }
         }
+    }
+    
+    //#MARK: Facebook Login
+    
+    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
+
+        if((FBSDKAccessToken.currentAccessToken()) != nil) {
+            let token = FBSDKAccessToken.currentAccessToken().tokenString
+            
+            UdacityClient.sharedInstance().authenticateWithCompletionHandler(token) { (success, errorString ) in
+                if success {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        
+                        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("StudentLocationsTabBar")
+                            as! UITabBarController
+                        self.presentViewController(controller, animated: true, completion: nil)
+                        
+                    })
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.debugLabel.text = errorString
+                    })
+                }
+            }
+        }
+    }
+    
+    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
+        
     }
     
     //#MARK:- Sign Up

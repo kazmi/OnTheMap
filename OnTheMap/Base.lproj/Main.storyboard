@@ -94,10 +94,22 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pkN-jw-2zF" customClass="FBSDKLoginButton">
+                                <rect key="frame" x="175" y="536" width="250" height="44"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="NWu-XQ-E3S"/>
+                                    <constraint firstAttribute="width" constant="250" id="vYJ-gS-CgT"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="cZe-Ps-H4U"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.9882352941176471" green="0.51372549019607838" blue="0.050980392156862744" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="wws-Ze-BbY" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="30" id="An2-3v-iFn"/>
+                            <constraint firstAttribute="centerX" secondItem="pkN-jw-2zF" secondAttribute="centerX" id="Fft-pd-Ksa"/>
                             <constraint firstItem="0D3-Vl-6va" firstAttribute="top" secondItem="Jvp-ed-tnZ" secondAttribute="bottom" constant="6" id="Jb5-Ci-q7m"/>
                             <constraint firstAttribute="centerX" secondItem="1Wq-J3-uzR" secondAttribute="centerX" id="Ktg-W8-iQ8"/>
                             <constraint firstAttribute="centerX" secondItem="BMM-R4-34w" secondAttribute="centerX" id="PIc-Y9-mZw"/>
@@ -106,6 +118,7 @@
                             <constraint firstItem="Ytd-f5-xvo" firstAttribute="top" secondItem="wws-Ze-BbY" secondAttribute="bottom" constant="10" id="bvs-Vj-tDO"/>
                             <constraint firstItem="BMM-R4-34w" firstAttribute="top" secondItem="dDY-h4-dZA" secondAttribute="bottom" constant="8" id="bwk-rH-7vd"/>
                             <constraint firstAttribute="centerX" secondItem="Jvp-ed-tnZ" secondAttribute="centerX" id="hGC-IY-qbg"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="pkN-jw-2zF" secondAttribute="bottom" constant="20" id="jB5-4f-3lc"/>
                             <constraint firstAttribute="centerX" secondItem="wws-Ze-BbY" secondAttribute="centerX" id="lGE-mI-g3z"/>
                             <constraint firstItem="dDY-h4-dZA" firstAttribute="top" secondItem="1Wq-J3-uzR" secondAttribute="bottom" constant="4" id="lZR-dJ-uF5"/>
                             <constraint firstAttribute="centerX" secondItem="Ytd-f5-xvo" secondAttribute="centerX" id="m1S-a3-ONH"/>

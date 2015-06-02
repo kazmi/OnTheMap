@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import FBSDKLoginKit
 
 class UdacityClient {
     
@@ -57,7 +58,56 @@ class UdacityClient {
 
     }
     
+    func authenticateWithCompletionHandler(token: String, completionHandler: (success: Bool, errorString: String?) -> Void) {
+        
+        /* Build the URL */
+        let urlString = "https://www.udacity.com/api/session"
+        let url = NSURL(string: urlString)!
+        
+        /* Configure the request */
+        let request = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        var jsonifyError: NSError? = nil
+        let jsonBody : [String:AnyObject] = ["facebook_mobile": ["access_token": token]]
+        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
+        
+        /* Make the request */
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+            if let error = downloadError {
+                completionHandler(success: false, errorString: "Request Timed Out")
+            } else {
+                
+                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
+                
+                /* Parse the data */
+                var parsingError: NSError? = nil
+                let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
+                    error: &parsingError) as! NSDictionary
+                
+                if let session = parsedJSON["session"] as? NSDictionary {
+                    completionHandler(success: true, errorString: nil)
+                } else {
+                    if let status = parsedJSON["status"] as? Int {
+                        if status == 403 {
+                            completionHandler(success: false, errorString: "Invalid Credentials")
+                        }
+                    }
+                }
+            }
+        }
+        
+        /* Start the request */
+        task.resume()
+    }
+    
     func logoutWithCompletionHandler(completionHandler: (success: Bool, errorString: String?) -> Void) {
+        
+        /* log out from facebook */
+        FBSDKAccessToken.setCurrentAccessToken(nil)
         
         /* Build the URL */
         let urlString = "https://www.udacity.com/api/session"
