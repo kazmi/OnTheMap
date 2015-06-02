@@ -23,7 +23,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let placeHolderTextColor: UIColor = UIColor.whiteColor()
+        
+        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email",
+            attributes: [NSForegroundColorAttributeName:placeHolderTextColor])
         emailTextField.delegate = self
+        
+        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password",
+            attributes: [NSForegroundColorAttributeName:placeHolderTextColor])
         passwordTextField.delegate = self
         
         tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap")
