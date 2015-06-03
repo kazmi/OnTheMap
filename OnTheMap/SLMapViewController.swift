@@ -22,6 +22,9 @@ class SLMapViewController: UIViewController, MKMapViewDelegate {
         /* Create and set the logout button */
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Plain, target: self, action: "logoutButtonTouchUp")
         
+        /* Create the set the add pin button */
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), style: UIBarButtonItemStyle.Plain, target: self, action: "informationPostingButtonTouchUp")
+        
         UdacityClient.sharedInstance().getStudentInformation { students, error in
             if let students = students {
                 self.students = students
@@ -101,6 +104,16 @@ class SLMapViewController: UIViewController, MKMapViewDelegate {
                 })
             }
         }
+    }
+    
+    // MARK: - Navigation Bar Buttons
+    
+    func informationPostingButtonTouchUp() {
+        
+        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController")
+            as! UIViewController
+        self.presentViewController(controller, animated: true, completion: nil)
+        
     }
 
 }
