@@ -230,7 +230,7 @@
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Nof-ox-UIq">
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="pin" id="UTz-DM-FsY">
@@ -274,7 +274,7 @@
     <resources>
         <image name="logo" width="111" height="111"/>
         <image name="map" width="48" height="30"/>
-        <image name="pin" width="21" height="37"/>
+        <image name="pin" width="32" height="32"/>
         <image name="table" width="30" height="30"/>
     </resources>
 </document>
