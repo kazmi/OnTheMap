@@ -300,8 +300,8 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </textField>
-                            <mapView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="p2T-iP-I0t">
-                                <rect key="frame" x="0.0" y="181" width="600" height="419"/>
+                            <mapView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="p2T-iP-I0t">
+                                <rect key="frame" x="0.0" y="183" width="600" height="417"/>
                             </mapView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Udz-f2-CFH">
                                 <rect key="frame" x="221" y="91" width="159" height="82"/>
@@ -368,7 +368,11 @@ Are You Studying Today?</string>
                             <constraint firstItem="Udz-f2-CFH" firstAttribute="top" secondItem="lwd-Jg-RDZ" secondAttribute="bottom" constant="71" id="Wsk-Se-GOu"/>
                             <constraint firstItem="NBY-Yn-WJI" firstAttribute="top" secondItem="JXo-75-QF5" secondAttribute="top" id="Ynf-ze-LHY"/>
                             <constraint firstItem="BcC-Lp-lvx" firstAttribute="top" secondItem="wpN-hp-zZ8" secondAttribute="bottom" id="f5k-du-iSh"/>
+                            <constraint firstItem="p2T-iP-I0t" firstAttribute="leading" secondItem="JXo-75-QF5" secondAttribute="leading" id="kuf-WQ-FJa"/>
+                            <constraint firstItem="BcC-Lp-lvx" firstAttribute="top" secondItem="p2T-iP-I0t" secondAttribute="bottom" id="nQi-Sb-DfU"/>
                             <constraint firstItem="wpN-hp-zZ8" firstAttribute="leading" secondItem="JXo-75-QF5" secondAttribute="leading" id="nZt-Lk-w9I"/>
+                            <constraint firstAttribute="trailing" secondItem="p2T-iP-I0t" secondAttribute="trailing" id="phI-qI-ebx"/>
+                            <constraint firstItem="p2T-iP-I0t" firstAttribute="top" secondItem="NBY-Yn-WJI" secondAttribute="bottom" id="tjU-Qq-viR"/>
                             <constraint firstItem="cii-w5-FRh" firstAttribute="trailing" secondItem="JXo-75-QF5" secondAttribute="trailingMargin" id="v5l-AQ-v9S"/>
                             <constraint firstAttribute="trailing" secondItem="G7X-7h-FGb" secondAttribute="trailing" id="vEw-I3-43X"/>
                             <constraint firstItem="G7X-7h-FGb" firstAttribute="top" secondItem="Udz-f2-CFH" secondAttribute="bottom" constant="72" id="x5X-aY-7vw"/>

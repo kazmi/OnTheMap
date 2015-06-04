@@ -64,7 +64,14 @@ class InformationPostingViewController: UIViewController {
                 
             if error == nil && placemarks.count > 0 {
                 let placemark = placemarks[0] as! CLPlacemark
+                
                 self.studyingLocation = placemark.location
+                
+                var annotation = MKPointAnnotation()
+                annotation.coordinate = placemark.location.coordinate
+                
+                var region = MKCoordinateRegion()
+                region.center = placemark.location.coordinate
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.cancelButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
@@ -74,6 +81,12 @@ class InformationPostingViewController: UIViewController {
                     self.linkTextField.hidden = false
                     self.mapView.hidden = false
                     self.submitButton.hidden = false
+                    
+                    // pass the region to mapview and show annotation
+                    self.mapView.addAnnotation(annotation)
+                    self.mapView.setRegion(region, animated: true)
+                    self.mapView.regionThatFits(region)
+
                 })
                 
             }
