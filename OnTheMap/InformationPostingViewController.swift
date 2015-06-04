@@ -34,9 +34,11 @@ class InformationPostingViewController: UIViewController {
         
         locationTextField.attributedPlaceholder = NSAttributedString(string: "Enter Your Location Here",
             attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
+        locationTextField.tintColor = UIColor.whiteColor()
         
         linkTextField.attributedPlaceholder = NSAttributedString(string: "Enter a link to Share Here",
             attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
+        linkTextField.tintColor = UIColor.whiteColor()
 
         tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap")
         tapRecognizer?.numberOfTapsRequired = 1

@@ -267,6 +267,7 @@
                             <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Your Link Here" textAlignment="center" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="NBY-Yn-WJI" userLabel="Enter Your Link Here">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="183"/>
                                 <color key="backgroundColor" red="0.25490196079999999" green="0.4549019608" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="183" id="Ha1-Ub-l1I"/>
                                 </constraints>
@@ -286,6 +287,7 @@
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" placeholder="Enter Your Location Here" textAlignment="center" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="G7X-7h-FGb">
                                 <rect key="frame" x="0.0" y="245" width="600" height="183"/>
                                 <color key="backgroundColor" red="0.25490196078431371" green="0.45490196078431372" blue="0.6470588235294118" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="183" id="oBP-7d-N1o"/>
                                 </constraints>
