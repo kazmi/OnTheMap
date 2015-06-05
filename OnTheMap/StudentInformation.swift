@@ -10,16 +10,22 @@ import Foundation
 import MapKit
 
 struct StudentInformation {
-    var firstName: String
-    var lastName: String
+    var objectID: String?
+    var uniqueKey: String
+    var mapString: String
     var mediaURL: String
     var latitude: CLLocationDegrees
     var longitude: CLLocationDegrees
+    var firstName: String
+    var lastName: String
     
     /* Construct a StudentInformation from a dictionary */
     init(dictionary: [String : AnyObject]) {
+        objectID = dictionary["objectId"] as? String
+        uniqueKey = dictionary["uniqueKey"] as! String
         firstName = dictionary["firstName"] as! String
         lastName = dictionary["lastName"] as! String
+        mapString = dictionary["mapString"] as! String
         mediaURL = dictionary["mediaURL"] as! String
         latitude = CLLocationDegrees(dictionary["latitude"] as! Double)
         longitude = CLLocationDegrees(dictionary["longitude"] as! Double)
