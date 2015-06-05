@@ -14,144 +14,12 @@ class UdacityClient {
     var uniqueKey: String?
     var name: String?
     
-    func getCurrentStudentName(completionHandler: (success: Bool, name: String?, errorString: String?) -> Void) {
-        
-        /* Build the URL */
-        let urlString = "https://www.udacity.com/api/users/\(self.uniqueKey!)"
-        let url = NSURL(string: urlString)!
-            
-        /* Configure the request */
-        let request = NSMutableURLRequest(URL: url)
-        
-        /* Make the request */
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request) { data, response, error in
-            if error != nil {
-                completionHandler(success: false, name: nil, errorString: "Request Timed Out")
-            }
-            
-            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
-            
-            /* Parse the data */
-            var parsingError: NSError? = nil
-            let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
-                error: &parsingError) as! NSDictionary
-            
-            if let user = parsedJSON["user"] as? NSDictionary {
-                
-                var firstName = user["first_name"] as? String
-                var lastName = user["last_name"] as? String
-                var name = firstName! + " " + lastName!
-                
-                completionHandler(success: true, name: name, errorString: nil)
-            } else {
-                
-                completionHandler(success: false, name: nil, errorString: "Account not found")
-            }
-            
+    class func sharedInstance() -> UdacityClient {
+        struct Singleton {
+            static var sharedInstance = UdacityClient()
         }
         
-        /* Start the request */
-        task.resume()
-        
-    }
-    
-    func getAccountKey(token: String, completionHandler: (success: Bool, uniqueKey: String?, errorString: String?) -> Void) {
-    
-        /* Build the URL */
-        let urlString = "https://www.udacity.com/api/session"
-        let url = NSURL(string: urlString)!
-        
-        /* Configure the request */
-        let request = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        var jsonifyError: NSError? = nil
-        let jsonBody : [String:AnyObject] = ["facebook_mobile": ["access_token": token]]
-        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
-        
-        /* Make the request */
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request) { data, respose, downloadError in
-            
-            if let error = downloadError {
-                completionHandler(success: false, uniqueKey: nil, errorString: "Request Timed Out")
-            } else {
-                
-                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
-                
-                /* Parse the data */
-                var parsingError: NSError? = nil
-                let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
-                    error: &parsingError) as! NSDictionary
-                
-                if let account = parsedJSON["account"] as? NSDictionary {
-                    var key = account.valueForKey("key") as? String
-                    completionHandler(success: true, uniqueKey: key, errorString: nil)
-                } else {
-                    if let status = parsedJSON["status"] as? Int {
-                        if status == 403 {
-                            completionHandler(success: false, uniqueKey: nil, errorString: "Invalid Credentials")
-                        }
-                    }
-                }
-            }
-        }
-                
-        /* Start the request */
-        task.resume()
-
-    }
-    
-    func getAccountKey(email: String, password: String, completionHandler: (success: Bool, uniqueKey: String?, errorString: String?) -> Void) {
-        
-        /* Build the URL */
-        let urlString = "https://www.udacity.com/api/session"
-        let url = NSURL(string: urlString)!
-        
-        /* Configure the request */
-        let request = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        var jsonifyError: NSError? = nil
-        let jsonBody : [String:AnyObject] = ["udacity": ["username": email, "password": password]]
-        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
-        
-        /* Make the request */
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request) { data, respose, downloadError in
-
-            if let error = downloadError {
-                completionHandler(success: false, uniqueKey: nil, errorString: "Request Timed Out")
-            } else {
-                
-            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
-                
-            /* Parse the data */
-            var parsingError: NSError? = nil
-            let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
-                error: &parsingError) as! NSDictionary
-                
-            if let account = parsedJSON["account"] as? NSDictionary {
-                var key = account.valueForKey("key") as? String
-                completionHandler(success: true, uniqueKey: key, errorString: nil)
-            } else {
-                if let status = parsedJSON["status"] as? Int {
-                    if status == 403 {
-                        completionHandler(success: false, uniqueKey: nil, errorString: "Invalid Credentials")
-                    }
-                }
-                }
-            }
-        }
-        
-    /* Start the request */
-    task.resume()
-
+        return Singleton.sharedInstance
     }
     
     func authenticateWithCompletionHandler(email: String, password: String, completionHandler: (success: Bool, errorString: String?) -> Void) {
@@ -238,6 +106,150 @@ class UdacityClient {
         task.resume()
     }
     
+    // MARK: - Udacity API
+    
+    func getCurrentStudentName(completionHandler: (success: Bool, name: String?, errorString: String?) -> Void) {
+        
+        /* Build the URL */
+        let urlString = "https://www.udacity.com/api/users/\(self.uniqueKey!)"
+        let url = NSURL(string: urlString)!
+        
+        /* Configure the request */
+        let request = NSMutableURLRequest(URL: url)
+        
+        /* Make the request */
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, error in
+            if error != nil {
+                completionHandler(success: false, name: nil, errorString: "Request Timed Out")
+            }
+            
+            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
+            
+            /* Parse the data */
+            var parsingError: NSError? = nil
+            let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
+                error: &parsingError) as! NSDictionary
+            
+            if let user = parsedJSON["user"] as? NSDictionary {
+                
+                var firstName = user["first_name"] as? String
+                var lastName = user["last_name"] as? String
+                var name = firstName! + " " + lastName!
+                
+                completionHandler(success: true, name: name, errorString: nil)
+            } else {
+                
+                completionHandler(success: false, name: nil, errorString: "Account not found")
+            }
+            
+        }
+        
+        /* Start the request */
+        task.resume()
+        
+    }
+    
+    func getAccountKey(token: String, completionHandler: (success: Bool, uniqueKey: String?, errorString: String?) -> Void) {
+        
+        /* Build the URL */
+        let urlString = "https://www.udacity.com/api/session"
+        let url = NSURL(string: urlString)!
+        
+        /* Configure the request */
+        let request = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        var jsonifyError: NSError? = nil
+        let jsonBody : [String:AnyObject] = ["facebook_mobile": ["access_token": token]]
+        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
+        
+        /* Make the request */
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, respose, downloadError in
+            
+            if let error = downloadError {
+                completionHandler(success: false, uniqueKey: nil, errorString: "Request Timed Out")
+            } else {
+                
+                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+                
+                /* Parse the data */
+                var parsingError: NSError? = nil
+                let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
+                    error: &parsingError) as! NSDictionary
+                
+                if let account = parsedJSON["account"] as? NSDictionary {
+                    var key = account.valueForKey("key") as? String
+                    completionHandler(success: true, uniqueKey: key, errorString: nil)
+                } else {
+                    if let status = parsedJSON["status"] as? Int {
+                        if status == 403 {
+                            completionHandler(success: false, uniqueKey: nil, errorString: "Invalid Credentials")
+                        }
+                    }
+                }
+            }
+        }
+        
+        /* Start the request */
+        task.resume()
+        
+    }
+    
+    func getAccountKey(email: String, password: String, completionHandler: (success: Bool, uniqueKey: String?, errorString: String?) -> Void) {
+        
+        /* Build the URL */
+        let urlString = "https://www.udacity.com/api/session"
+        let url = NSURL(string: urlString)!
+        
+        /* Configure the request */
+        let request = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        var jsonifyError: NSError? = nil
+        let jsonBody : [String:AnyObject] = ["udacity": ["username": email, "password": password]]
+        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
+        
+        /* Make the request */
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, respose, downloadError in
+            
+            if let error = downloadError {
+                completionHandler(success: false, uniqueKey: nil, errorString: "Request Timed Out")
+            } else {
+                
+                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+                
+                /* Parse the data */
+                var parsingError: NSError? = nil
+                let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
+                    error: &parsingError) as! NSDictionary
+                
+                if let account = parsedJSON["account"] as? NSDictionary {
+                    var key = account.valueForKey("key") as? String
+                    completionHandler(success: true, uniqueKey: key, errorString: nil)
+                } else {
+                    if let status = parsedJSON["status"] as? Int {
+                        if status == 403 {
+                            completionHandler(success: false, uniqueKey: nil, errorString: "Invalid Credentials")
+                        }
+                    }
+                }
+            }
+        }
+        
+        /* Start the request */
+        task.resume()
+        
+    }
+    
+    // MARK: - Parse API
+    
     func getStudentInformation(completionHandler: (result: [StudentInformation]?, error: NSError?) -> Void) {
         
         /* Build the URL */
@@ -275,14 +287,6 @@ class UdacityClient {
         /* Start the request */
         task.resume()
         
-    }
-    
-    class func sharedInstance() -> UdacityClient {
-        struct Singleton {
-            static var sharedInstance = UdacityClient()
-        }
-        
-        return Singleton.sharedInstance
     }
     
 }
