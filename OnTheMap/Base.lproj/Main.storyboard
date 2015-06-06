@@ -17,11 +17,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="wws-Ze-BbY" userLabel="Logo">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="udacity" translatesAutoresizingMaskIntoConstraints="NO" id="wws-Ze-BbY" userLabel="Logo">
                                 <rect key="frame" x="245" y="50" width="111" height="111"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="111" id="Kx4-vB-tOs"/>
+                                    <constraint firstAttribute="height" constant="111" id="tmi-6V-mY8"/>
+                                </constraints>
                             </imageView>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Jvp-ed-tnZ">
-                                <rect key="frame" x="175" y="220" width="250" height="44"/>
+                                <rect key="frame" x="175" y="210" width="250" height="44"/>
                                 <color key="backgroundColor" red="0.99607843137254903" green="0.72549019607843135" blue="0.50588235294117645" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="250" id="4ms-WA-KHn"/>
@@ -37,7 +41,7 @@
                                 </userDefinedRuntimeAttributes>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0D3-Vl-6va">
-                                <rect key="frame" x="175" y="270" width="250" height="44"/>
+                                <rect key="frame" x="175" y="260" width="250" height="44"/>
                                 <color key="backgroundColor" red="0.99607843139999996" green="0.72549019609999998" blue="0.50588235290000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="KgR-eR-eZY"/>
@@ -52,7 +56,7 @@
                                 </userDefinedRuntimeAttributes>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Wq-J3-uzR">
-                                <rect key="frame" x="175" y="320" width="250" height="44"/>
+                                <rect key="frame" x="175" y="310" width="250" height="44"/>
                                 <color key="backgroundColor" red="0.93333333333333335" green="0.24313725490196078" blue="0.023529411764705882" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="iE6-ls-IA5"/>
@@ -66,7 +70,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BMM-R4-34w" userLabel="DebugLabel">
-                                <rect key="frame" x="175" y="412" width="250" height="44"/>
+                                <rect key="frame" x="175" y="402" width="250" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="lessThanOrEqual" constant="250" id="avi-s2-Fej"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="oCo-ye-6TQ"/>
@@ -76,7 +80,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dDY-h4-dZA" userLabel="SignUp">
-                                <rect key="frame" x="175" y="368" width="250" height="36"/>
+                                <rect key="frame" x="175" y="358" width="250" height="36"/>
                                 <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="17"/>
                                 <state key="normal" title="Don't have an account? Sign Up">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -87,7 +91,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Login to Udacity" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ytd-f5-xvo">
-                                <rect key="frame" x="229" y="171" width="142" height="41"/>
+                                <rect key="frame" x="229" y="161" width="142" height="41"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="41" id="dtk-fM-Uds"/>
                                 </constraints>
@@ -109,18 +113,18 @@
                         </subviews>
                         <color key="backgroundColor" red="0.9882352941176471" green="0.51372549019607838" blue="0.050980392156862744" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="wws-Ze-BbY" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="30" id="An2-3v-iFn"/>
+                            <constraint firstItem="wws-Ze-BbY" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="30" id="0CE-42-e6g"/>
                             <constraint firstAttribute="centerX" secondItem="pkN-jw-2zF" secondAttribute="centerX" id="Fft-pd-Ksa"/>
+                            <constraint firstItem="wws-Ze-BbY" firstAttribute="centerX" secondItem="Ytd-f5-xvo" secondAttribute="centerX" id="Hp6-rT-002"/>
                             <constraint firstItem="0D3-Vl-6va" firstAttribute="top" secondItem="Jvp-ed-tnZ" secondAttribute="bottom" constant="6" id="Jb5-Ci-q7m"/>
                             <constraint firstAttribute="centerX" secondItem="1Wq-J3-uzR" secondAttribute="centerX" id="Ktg-W8-iQ8"/>
                             <constraint firstAttribute="centerX" secondItem="BMM-R4-34w" secondAttribute="centerX" id="PIc-Y9-mZw"/>
                             <constraint firstAttribute="centerX" secondItem="0D3-Vl-6va" secondAttribute="centerX" id="Wa8-Cz-FYJ"/>
                             <constraint firstAttribute="centerX" secondItem="dDY-h4-dZA" secondAttribute="centerX" id="XNN-sZ-N1D"/>
-                            <constraint firstItem="Ytd-f5-xvo" firstAttribute="top" secondItem="wws-Ze-BbY" secondAttribute="bottom" constant="10" id="bvs-Vj-tDO"/>
                             <constraint firstItem="BMM-R4-34w" firstAttribute="top" secondItem="dDY-h4-dZA" secondAttribute="bottom" constant="8" id="bwk-rH-7vd"/>
+                            <constraint firstItem="Ytd-f5-xvo" firstAttribute="top" secondItem="wws-Ze-BbY" secondAttribute="bottom" id="euG-zb-q65"/>
                             <constraint firstAttribute="centerX" secondItem="Jvp-ed-tnZ" secondAttribute="centerX" id="hGC-IY-qbg"/>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="pkN-jw-2zF" secondAttribute="bottom" constant="20" id="jB5-4f-3lc"/>
-                            <constraint firstAttribute="centerX" secondItem="wws-Ze-BbY" secondAttribute="centerX" id="lGE-mI-g3z"/>
                             <constraint firstItem="dDY-h4-dZA" firstAttribute="top" secondItem="1Wq-J3-uzR" secondAttribute="bottom" constant="4" id="lZR-dJ-uF5"/>
                             <constraint firstAttribute="centerX" secondItem="Ytd-f5-xvo" secondAttribute="centerX" id="m1S-a3-ONH"/>
                             <constraint firstItem="1Wq-J3-uzR" firstAttribute="width" secondItem="Jvp-ed-tnZ" secondAttribute="width" id="oHz-hp-UGm"/>
@@ -412,9 +416,9 @@ Are You Studying Today?</string>
         </scene>
     </scenes>
     <resources>
-        <image name="logo" width="111" height="111"/>
         <image name="map" width="48" height="30"/>
         <image name="pin" width="32" height="32"/>
         <image name="table" width="30" height="30"/>
+        <image name="udacity" width="256" height="256"/>
     </resources>
 </document>
