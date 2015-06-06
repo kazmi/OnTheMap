@@ -95,6 +95,45 @@ class InformationPostingViewController: UIViewController {
     
     @IBAction func postInformation(sender: AnyObject) {
         
+        var studentInfo: [String : AnyObject] = [:]
+        studentInfo["objectId"] = UdacityClient.sharedInstance().currentStudent?.objectID
+        studentInfo["uniqueKey"] = UdacityClient.sharedInstance().currentStudent?.uniqueKey!
+        studentInfo["mapString"] = self.locationTextField.text
+        studentInfo["mediaURL"] = self.linkTextField.text
+        studentInfo["latitude"] = self.studyingLocation?.coordinate.latitude
+        studentInfo["longitude"] = self.studyingLocation?.coordinate.longitude
+        studentInfo["firstName"] = UdacityClient.sharedInstance().currentStudent?.firstName!
+        studentInfo["lastName"] = UdacityClient.sharedInstance().currentStudent?.lastName!
+        var student = StudentInformation(dictionary: studentInfo)
+        
+        if let objectID = UdacityClient.sharedInstance().currentStudent?.objectID {
+            
+            UdacityClient.sharedInstance().putStudentInformation(student) { (success, error) in
+                
+                if success {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    })
+                }
+                
+            }
+            
+        } else {
+            
+            UdacityClient.sharedInstance().postStudentInformation(student) { (success, objectID, error) in
+                
+                if success {
+                    UdacityClient.sharedInstance().currentStudent?.objectID = objectID!
+                    
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    })
+                }
+                
+            }
+            
+        }
+        
     }
     
     

@@ -37,7 +37,7 @@ class SLMapViewController: UIViewController, MKMapViewDelegate {
                     // Create the annotation and set its properties
                     var annotation = MKPointAnnotation()
                     annotation.coordinate = coordinate
-                    annotation.title = "\(student.firstName) \(student.lastName)"
+                    annotation.title = "\(student.firstName!) \(student.lastName!)"
                     annotation.subtitle = student.mediaURL
                     
                     self.annotations.append(annotation)

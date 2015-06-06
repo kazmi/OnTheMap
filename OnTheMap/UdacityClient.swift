@@ -385,6 +385,113 @@ class UdacityClient {
         
     }
     
+    func postStudentInformation(student: StudentInformation, completionHandler: (success: Bool, objectID: String?, error: NSError?) -> Void) {
+        
+        /* Build the URL */
+        let urlString = "https://api.parse.com/1/classes/StudentLocation"
+        let url = NSURL(string: urlString)!
+        
+        /* Configure the request */
+        let request = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "POST"
+        request.addValue("ENTER_APP_ID_HERE", forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue("ENTER_REST_API_KEY_HERE", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        var jsonifyError: NSError? = nil
+        let jsonBody : [String:AnyObject] =
+        [
+            "uniqueKey": student.uniqueKey!,
+            "firstName": student.firstName!,
+            "lastName": student.lastName!,
+            "mapString": student.mapString!,
+            "mediaURL": student.mediaURL!,
+            "latitude": student.latitude!,
+            "longitude": student.longitude!
+        ]
+        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
+        
+        /* Make the request */
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, error in
+            if error != nil {
+                completionHandler(success: false, objectID: nil, error: error)
+            }
+            
+            /* Parse the data */
+            var parsingError: NSError? = nil
+            let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
+                options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
+            
+            /* Use the data */
+            if let objectID = parsedJSON.valueForKey("objectId") as? String {
+                completionHandler(success: true, objectID: objectID, error: nil)
+            } else {
+                completionHandler(success: false, objectID: nil, error: NSError(domain: "StudentLoction create error", code: 0,
+                    userInfo: [NSLocalizedDescriptionKey: "StudentLocation object not created"]))
+            }
+            
+        }
+        
+        /* Start the request */
+        task.resume()
+        
+    }
+    
+    func putStudentInformation(student: StudentInformation, completionHandler: (success: Bool, error: NSError?) -> Void) {
+        
+        /* Build the URL */
+        var objectID = student.objectID!
+        let urlString = "https://api.parse.com/1/classes/StudentLocation/\(objectID)"
+        let url = NSURL(string: urlString)!
+        
+        /* Configure the request */
+        let request = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "PUT"
+        request.addValue("ENTER_APP_ID_HERE", forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue("ENTER_REST_API_KEY_HERE", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        var jsonifyError: NSError? = nil
+        let jsonBody : [String:AnyObject] =
+        [
+            "uniqueKey": student.uniqueKey!,
+            "firstName": student.firstName!,
+            "lastName": student.lastName!,
+            "mapString": student.mapString!,
+            "mediaURL": student.mediaURL!,
+            "latitude": student.latitude!,
+            "longitude": student.longitude!
+        ]
+        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
+        
+        /* Make the request */
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, error in
+            if error != nil {
+                completionHandler(success: false, error: error)
+            }
+            
+            /* Parse the data */
+            var parsingError: NSError? = nil
+            let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
+                options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
+            
+            /* Use the data */
+            if let createdAt = parsedJSON.valueForKey("updatedAt") as? String {
+                completionHandler(success: true, error: nil)
+            } else {
+                completionHandler(success: false, error: NSError(domain: "StudentLoction update error", code: 0,
+                    userInfo: [NSLocalizedDescriptionKey: "StudentLocation object not updated"]))
+            }
+            
+        }
+        
+        /* Start the request */
+        task.resume()
+
+    }
+    
     // MARK: - Helper Methods
     
     /* convert a dictionary of parameters to a string for a url */

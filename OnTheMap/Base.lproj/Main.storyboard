@@ -328,7 +328,6 @@ Are You Studying Today?</string>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="findOnTheMap:" destination="6ZJ-Jq-jLX" eventType="touchUpInside" id="GVU-Tp-qSp"/>
                                             <action selector="postInformation:" destination="6ZJ-Jq-jLX" eventType="touchUpInside" id="fLe-Q0-y0s"/>
                                         </connections>
                                     </button>
