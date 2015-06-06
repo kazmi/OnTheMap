@@ -72,6 +72,9 @@ class InformationPostingViewController: UIViewController {
                 
                 var region = MKCoordinateRegion()
                 region.center = placemark.location.coordinate
+                /* the delta values are assigned through trial and error */
+                region.span.latitudeDelta = 0.5
+                region.span.longitudeDelta = 0.5
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.cancelButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
