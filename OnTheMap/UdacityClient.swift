@@ -11,8 +11,7 @@ import FBSDKLoginKit
 
 class UdacityClient {
     
-    var uniqueKey: String?
-    var name: String?
+    var currentStudent: StudentInformation? = nil
     
     class func sharedInstance() -> UdacityClient {
         struct Singleton {
@@ -28,13 +27,36 @@ class UdacityClient {
             
             if success {
                 
-                self.uniqueKey = uniqueKey
+                if (self.currentStudent == nil) { self.currentStudent = StudentInformation() }
                 
-                self.getCurrentStudentName() { (success, name, errorString) in
+                self.currentStudent?.uniqueKey = uniqueKey
+                
+                self.getCurrentStudentName() { (success, firstName, lastName, errorString) in
                     
-                    self.name = name
-                
-                    completionHandler(success: success, errorString: errorString)
+                    if success {
+                        
+                        self.currentStudent?.firstName = firstName
+                        
+                        self.currentStudent?.lastName = lastName
+                        
+                        self.getCurrentStudentInformation() { (student, error) in
+                            
+                            if errorString == nil {
+                                
+                                self.currentStudent = student
+                                
+                                completionHandler(success: true, errorString: nil)
+                                
+                            } else {
+                                
+                                completionHandler(success: false, errorString: error?.description)
+                            }
+                            
+                        }
+
+                    } else {
+                        completionHandler(success: success, errorString: errorString)
+                    }
 
                 }
                 
@@ -52,13 +74,36 @@ class UdacityClient {
             
             if success {
                 
-                self.uniqueKey = uniqueKey
+                if (self.currentStudent == nil) { self.currentStudent = StudentInformation() }
                 
-                self.getCurrentStudentName() { (success, name, errorString) in
+                self.currentStudent?.uniqueKey = uniqueKey
+                
+                self.getCurrentStudentName() { (success, firstName, lastName, errorString) in
                     
-                    self.name = name
-                    
-                    completionHandler(success: success, errorString: errorString)
+                    if success {
+                        
+                        self.currentStudent?.firstName = firstName
+                        
+                        self.currentStudent?.lastName = lastName
+                        
+                        self.getCurrentStudentInformation() { (student, error) in
+                            
+                            if errorString == nil {
+                                
+                                self.currentStudent = student
+                                
+                                completionHandler(success: true, errorString: nil)
+                                
+                            } else {
+                                
+                                completionHandler(success: false, errorString: error?.description)
+                            }
+                            
+                        }
+                        
+                    } else {
+                        completionHandler(success: success, errorString: errorString)
+                    }
                     
                 }
                 
@@ -99,6 +144,9 @@ class UdacityClient {
                 completionHandler(success: false, errorString: downloadError.description)
             }
             
+            /* clear current student */
+            self.currentStudent = nil
+            
             completionHandler(success: true, errorString: nil)
         }
         
@@ -108,10 +156,10 @@ class UdacityClient {
     
     // MARK: - Udacity API
     
-    func getCurrentStudentName(completionHandler: (success: Bool, name: String?, errorString: String?) -> Void) {
+    func getCurrentStudentName(completionHandler: (success: Bool, firstName: String?, lastName: String?, errorString: String?) -> Void) {
         
         /* Build the URL */
-        let urlString = "https://www.udacity.com/api/users/\(self.uniqueKey!)"
+        let urlString = "https://www.udacity.com/api/users/\(self.currentStudent!.uniqueKey!)"
         let url = NSURL(string: urlString)!
         
         /* Configure the request */
@@ -121,7 +169,7 @@ class UdacityClient {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
             if error != nil {
-                completionHandler(success: false, name: nil, errorString: "Request Timed Out")
+                completionHandler(success: false, firstName: nil, lastName: nil, errorString: "Request Timed Out")
             }
             
             let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
@@ -135,12 +183,11 @@ class UdacityClient {
                 
                 var firstName = user["first_name"] as? String
                 var lastName = user["last_name"] as? String
-                var name = firstName! + " " + lastName!
                 
-                completionHandler(success: true, name: name, errorString: nil)
+                completionHandler(success: true, firstName: firstName, lastName: lastName, errorString: nil)
             } else {
                 
-                completionHandler(success: false, name: nil, errorString: "Account not found")
+                completionHandler(success: false, firstName: nil, lastName: nil, errorString: "Account not found")
             }
             
         }
@@ -287,6 +334,78 @@ class UdacityClient {
         /* Start the request */
         task.resume()
         
+    }
+    
+    func getCurrentStudentInformation(completionHandler: (result: StudentInformation?, error: NSError?) -> Void) {
+        
+        /* Parameters */
+        let methodParameters = [
+            "where": "{\"uniqueKey\":\"\(self.currentStudent!.uniqueKey!)\"}"
+        ]
+        
+        /* Build the URL */
+        let urlString = "https://api.parse.com/1/classes/StudentLocation" + UdacityClient.escapedParameters(methodParameters)
+        let url = NSURL(string: urlString)!
+        
+        /* Configure the request */
+        let request = NSMutableURLRequest(URL: url)
+        request.addValue("ENTER_APP_ID_HERE", forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue("ENTER_REST_API_KEY_HERE", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        
+        /* Make the request */
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+            
+            if downloadError != nil {
+                completionHandler(result: nil, error: downloadError)
+            }
+            
+            /* Parse the data */
+            var parsingError: NSError? = nil
+            let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
+                options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
+            
+            /* Use the data */
+            if let results = parsedJSON.valueForKey("results") as? [[String : AnyObject]] {
+                if results.count > 0 {
+                    var student = StudentInformation(dictionary: results[0])
+                    completionHandler(result: student, error: nil)
+                }
+                else {
+                    completionHandler(result: nil, error: NSError(domain: "student not found", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not find student for given key"]))
+                }
+            } else {
+                completionHandler(result: nil, error: NSError(domain: "student information parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getStudentInformation"]))
+            }
+            
+        }
+        
+        /* Start the request */
+        task.resume()
+        
+    }
+    
+    // MARK: - Helper Methods
+    
+    /* convert a dictionary of parameters to a string for a url */
+    class func escapedParameters(parameters: [String : AnyObject]) -> String {
+        
+        var urlVars = [String]()
+        
+        for (key, value) in parameters {
+            
+            /* Make sure that it is a string value */
+            let stringValue = "\(value)"
+            
+            /* Escape it */
+            let escapedValue = stringValue.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
+            
+            /* Append it */
+            urlVars += [key + "=" + "\(escapedValue!)"]
+            
+        }
+        
+        return (!urlVars.isEmpty ? "?" : "") + join("&", urlVars)
     }
     
 }
