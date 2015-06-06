@@ -78,9 +78,31 @@ class SLTableViewController: UITableViewController {
     
     func informationPostingButtonTouchUp() {
         
-        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController")
-            as! UIViewController
-        self.presentViewController(controller, animated: true, completion: nil)
+        if UdacityClient.sharedInstance().currentStudent?.objectID != nil {
+            let message = "You have already posted a Student Location. Would you like to Overwrite Your Current Location?"
+            let alertController = UIAlertController(title: nil, message: message, preferredStyle: .Alert)
+            
+            let overwriteAction = UIAlertAction(title: "Overwrite", style: .Default) { (action) in
+                
+                let controller = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController")
+                    as! UIViewController
+                self.presentViewController(controller, animated: true, completion: nil)
+            }
+            
+            let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+                
+            }
+            
+            alertController.addAction(cancelAction)
+            alertController.addAction(overwriteAction)
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
+        } else {
+            
+            let controller = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController")
+                as! UIViewController
+            self.presentViewController(controller, animated: true, completion: nil)
+        }
         
     }
 
