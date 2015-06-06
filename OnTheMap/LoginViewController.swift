@@ -65,13 +65,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
             UdacityClient.sharedInstance().authenticateWithCompletionHandler(
                 emailTextField.text, password: passwordTextField.text) { (success, errorString) in
                 if success {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        
-                        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("StudentLocationsTabBar")
-                            as! UITabBarController
-                        self.presentViewController(controller, animated: true, completion: nil)
-                        
-                    })
+                    self.completeLogin()
                 } else {
                     dispatch_async(dispatch_get_main_queue(), {
                         self.debugLabel.text = errorString
@@ -90,13 +84,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
             
             UdacityClient.sharedInstance().authenticateWithCompletionHandler(token) { (success, errorString ) in
                 if success {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        
-                        let controller = self.storyboard!.instantiateViewControllerWithIdentifier("StudentLocationsTabBar")
-                            as! UITabBarController
-                        self.presentViewController(controller, animated: true, completion: nil)
-                        
-                    })
+                    self.completeLogin()
                 } else {
                     dispatch_async(dispatch_get_main_queue(), {
                         self.debugLabel.text = errorString
@@ -108,6 +96,16 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
     
     func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
         
+    }
+    
+    func completeLogin() {
+        dispatch_async(dispatch_get_main_queue(), {
+            
+            let controller = self.storyboard!.instantiateViewControllerWithIdentifier("StudentLocationsTabBar")
+                as! UITabBarController
+            self.presentViewController(controller, animated: true, completion: nil)
+            
+        })
     }
     
     //#MARK:- Sign Up
