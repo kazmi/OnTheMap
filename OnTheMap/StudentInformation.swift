@@ -19,6 +19,11 @@ struct StudentInformation {
     var firstName: String? = nil
     var lastName: String? = nil
     
+    /* Construct empty StudentInformation */
+    init() {
+        
+    }
+    
     /* Construct a StudentInformation from a dictionary */
     init(dictionary: [String : AnyObject]) {
         
