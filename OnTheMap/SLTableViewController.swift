@@ -49,7 +49,7 @@ class SLTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("SLTableViewCell") as! UITableViewCell
         let studentInformation = students[indexPath.row]
         
-        cell.textLabel?.text = studentInformation.firstName + " " + studentInformation.lastName
+        cell.textLabel?.text = studentInformation.firstName! + " " + studentInformation.lastName!
 
         return cell
     }
@@ -57,7 +57,7 @@ class SLTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         /* show media url in default browser */
         let studentInformation = students[indexPath.row]
-        let link = NSURL(string: studentInformation.mediaURL)!
+        let link = NSURL(string: studentInformation.mediaURL!)!
         UIApplication.sharedApplication().openURL(link)
     }
     

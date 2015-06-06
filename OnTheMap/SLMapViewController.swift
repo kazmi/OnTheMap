@@ -32,7 +32,7 @@ class SLMapViewController: UIViewController, MKMapViewDelegate {
                 for student in students {
                     
                     // The lat and long are used to create a CLLocationCoordinates2D instance.
-                    let coordinate = CLLocationCoordinate2D(latitude: student.latitude, longitude: student.longitude)
+                    let coordinate = CLLocationCoordinate2D(latitude: student.latitude!, longitude: student.longitude!)
                     
                     // Create the annotation and set its properties
                     var annotation = MKPointAnnotation()

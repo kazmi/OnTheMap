@@ -10,25 +10,49 @@ import Foundation
 import MapKit
 
 struct StudentInformation {
-    var objectID: String?
-    var uniqueKey: String
-    var mapString: String
-    var mediaURL: String
-    var latitude: CLLocationDegrees
-    var longitude: CLLocationDegrees
-    var firstName: String
-    var lastName: String
+    var objectID: String? = nil
+    var uniqueKey: String? = nil
+    var mapString: String? = nil
+    var mediaURL: String? = nil
+    var latitude: CLLocationDegrees? = nil
+    var longitude: CLLocationDegrees? = nil
+    var firstName: String? = nil
+    var lastName: String? = nil
     
     /* Construct a StudentInformation from a dictionary */
     init(dictionary: [String : AnyObject]) {
-        objectID = dictionary["objectId"] as? String
-        uniqueKey = dictionary["uniqueKey"] as! String
-        firstName = dictionary["firstName"] as! String
-        lastName = dictionary["lastName"] as! String
-        mapString = dictionary["mapString"] as! String
-        mediaURL = dictionary["mediaURL"] as! String
-        latitude = CLLocationDegrees(dictionary["latitude"] as! Double)
-        longitude = CLLocationDegrees(dictionary["longitude"] as! Double)
+        
+        if let objectID = dictionary["latitude"] as? String {
+            self.objectID = objectID
+        }
+        
+        if let uniqueKey = dictionary["uniqueKey"] as? String {
+            self.uniqueKey = uniqueKey
+        }
+        
+        if let firstName = dictionary["firstName"] as? String {
+            self.firstName = firstName
+        }
+        
+        if let lastName = dictionary["lastName"] as? String {
+            self.lastName = lastName
+        }
+        
+        if let mapString = dictionary["mapString"] as? String {
+            self.mapString = mapString
+        }
+        
+        if let mediaURL = dictionary["mediaURL"] as? String {
+            self.mediaURL = mediaURL
+        }
+        
+        if let latitude = dictionary["latitude"] as? Double {
+            self.latitude = latitude
+        }
+        
+        if let longitude = dictionary["longitude"] as? Double {
+            self.longitude = longitude
+        }
         
     }
     
