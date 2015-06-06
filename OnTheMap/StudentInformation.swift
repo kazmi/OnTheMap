@@ -22,7 +22,7 @@ struct StudentInformation {
     /* Construct a StudentInformation from a dictionary */
     init(dictionary: [String : AnyObject]) {
         
-        if let objectID = dictionary["latitude"] as? String {
+        if let objectID = dictionary["objectId"] as? String {
             self.objectID = objectID
         }
         
