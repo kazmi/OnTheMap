@@ -13,6 +13,7 @@ import MapKit
 class InformationPostingViewController: UIViewController {
     
     
+    @IBOutlet weak var linkButton: UIButton!
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var locationTextField: UITextField!
@@ -58,6 +59,11 @@ class InformationPostingViewController: UIViewController {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    @IBAction func browseLink(sender: AnyObject) {
+        let app = UIApplication.sharedApplication()
+        app.openURL(NSURL(string: linkTextField.text)!)
+    }
+    
     @IBAction func findOnTheMap(sender: AnyObject) {
         geocoder.geocodeAddressString(locationTextField.text,
             completionHandler: { (placemarks:[AnyObject]!, error: NSError!) -> Void in
@@ -84,6 +90,7 @@ class InformationPostingViewController: UIViewController {
                     self.linkTextField.hidden = false
                     self.mapView.hidden = false
                     self.submitButton.hidden = false
+                    self.linkButton.hidden = false
                     
                     // pass the region to mapview and show annotation
                     self.mapView.addAnnotation(annotation)
