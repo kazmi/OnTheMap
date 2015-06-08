@@ -81,6 +81,7 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
             completionHandler: { (placemarks:[AnyObject]!, error: NSError!) -> Void in
                 
             if error == nil && placemarks.count > 0 {
+                
                 let placemark = placemarks[0] as! CLPlacemark
                 
                 self.studyingLocation = placemark.location
@@ -95,6 +96,7 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
                 region.span.longitudeDelta = 0.5
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    
                     self.cancelButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
                     self.questionLabel.hidden = true
                     self.locationTextField.hidden = true
@@ -111,7 +113,19 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
 
                 })
                 
+            } else {
+                
+                let alertController = UIAlertController(title: nil, message: "The geocoding operation could not be completed.", preferredStyle: .Alert)
+                
+                let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+                }
+                
+                alertController.addAction(okAction)
+                
+                self.presentViewController(alertController, animated: true, completion: nil)
+                
             }
+                
          })
     }
     
