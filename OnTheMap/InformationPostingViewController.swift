@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class InformationPostingViewController: UIViewController {
+class InformationPostingViewController: UIViewController, UITextFieldDelegate {
     
     
     @IBOutlet weak var linkButton: UIButton!
@@ -158,6 +158,18 @@ class InformationPostingViewController: UIViewController {
         
     }
     
+    //#MARK: - Textfield Delegate
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textFieldDidBeginEditing(textField: UITextField) {
+        if(textField == linkTextField && textField.text == "") {
+            textField.text = "http://"
+        }
+    }
     
     //#MARK:- Keyboard Fixes & Notifications
     
