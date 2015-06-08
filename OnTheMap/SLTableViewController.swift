@@ -9,8 +9,6 @@
 import UIKit
 
 class SLTableViewController: UITableViewController {
-
-    var students: [StudentInformation] = [StudentInformation]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,30 +19,33 @@ class SLTableViewController: UITableViewController {
         /* Create the set the add pin button */
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), style: UIBarButtonItemStyle.Plain, target: self, action: "informationPostingButtonTouchUp")
         
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        UdacityClient.sharedInstance().getStudentInformation { students, error in
-            if let students = students {
-                self.students = students
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.tableView.reloadData()
-                }
-            } else {
-                
-                let alertController = UIAlertController(title: nil, message: error,
-                    preferredStyle: .Alert)
-                
-                let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in
-                }
-                alertController.addAction(okAction)
-                
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.presentViewController(alertController, animated: true, completion: nil)
+        if (DataModel.sharedInstance().students.count == 0) {
+            println("populating data")
+            UdacityClient.sharedInstance().getStudentInformation { students, error in
+                if let students = students {
+                    DataModel.sharedInstance().students = students
+                    
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.tableView.reloadData()
+                    }
+                    
+                } else {
+                    
+                    let alertController = UIAlertController(title: nil, message: error,
+                        preferredStyle: .Alert)
+                    
+                    let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+                    }
+                    alertController.addAction(okAction)
+                    
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.presentViewController(alertController, animated: true, completion: nil)
+                    }
                 }
             }
+            
+        } else {
+            self.tableView.reloadData()
         }
         
     }
@@ -52,12 +53,12 @@ class SLTableViewController: UITableViewController {
     // MARK: - Table View and Data Source Delegates
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.students.count
+        return DataModel.sharedInstance().students.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("SLTableViewCell") as! UITableViewCell
-        let studentInformation = students[indexPath.row]
+        let studentInformation = DataModel.sharedInstance().students[indexPath.row]
         
         cell.textLabel?.text = studentInformation.firstName! + " " + studentInformation.lastName!
 
@@ -66,7 +67,7 @@ class SLTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         /* show media url in default browser */
-        let studentInformation = students[indexPath.row]
+        let studentInformation = DataModel.sharedInstance().students[indexPath.row]
         let link = NSURL(string: studentInformation.mediaURL!)!
         UIApplication.sharedApplication().openURL(link)
     }

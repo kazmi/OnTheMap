@@ -11,7 +11,6 @@ import MapKit
 
 class SLMapViewController: UIViewController, MKMapViewDelegate {
     
-    var students: [StudentInformation] = [StudentInformation]()
     var annotations: [MKPointAnnotation] = [MKPointAnnotation]()
     
     @IBOutlet weak var mapView: MKMapView!
@@ -25,41 +24,55 @@ class SLMapViewController: UIViewController, MKMapViewDelegate {
         /* Create the set the add pin button */
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), style: UIBarButtonItemStyle.Plain, target: self, action: "informationPostingButtonTouchUp")
         
-        UdacityClient.sharedInstance().getStudentInformation { students, error in
-            if let students = students {
-                self.students = students
-                
-                for student in students {
+        if (DataModel.sharedInstance().students.count == 0) {
+            println("populating data")
+            UdacityClient.sharedInstance().getStudentInformation { students, error in
+                if let students = students {
+                    DataModel.sharedInstance().students = students
                     
-                    // The lat and long are used to create a CLLocationCoordinates2D instance.
-                    let coordinate = CLLocationCoordinate2D(latitude: student.latitude!, longitude: student.longitude!)
-                    
-                    // Create the annotation and set its properties
-                    var annotation = MKPointAnnotation()
-                    annotation.coordinate = coordinate
-                    annotation.title = "\(student.firstName!) \(student.lastName!)"
-                    annotation.subtitle = student.mediaURL
-                    
-                    self.annotations.append(annotation)
-                    
+                    self.generateAnnotations()
                     dispatch_async(dispatch_get_main_queue()) {
                         self.mapView.addAnnotations(self.annotations)
                     }
-                }
-                
-            } else {
-
-                let alertController = UIAlertController(title: nil, message: error,
-                    preferredStyle: .Alert)
-                
-                let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in
-                }
-                alertController.addAction(okAction)
-                
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.presentViewController(alertController, animated: true, completion: nil)
+                    
+                } else {
+                    
+                    let alertController = UIAlertController(title: nil, message: error,
+                        preferredStyle: .Alert)
+                    
+                    let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+                    }
+                    alertController.addAction(okAction)
+                    
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.presentViewController(alertController, animated: true, completion: nil)
+                    }
                 }
             }
+        } else {
+        
+            generateAnnotations()
+            mapView.addAnnotations(annotations)
+            
+        }
+        
+    }
+    
+    func generateAnnotations() {
+        
+        for student in DataModel.sharedInstance().students {
+            
+            // The lat and long are used to create a CLLocationCoordinates2D instance.
+            let coordinate = CLLocationCoordinate2D(latitude: student.latitude!, longitude: student.longitude!)
+            
+            // Create the annotation and set its properties
+            var annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            annotation.title = "\(student.firstName!) \(student.lastName!)"
+            annotation.subtitle = student.mediaURL
+            
+            self.annotations.append(annotation)
+            
         }
         
     }
