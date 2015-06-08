@@ -43,6 +43,18 @@ class InformationPostingViewController: UIViewController {
 
         tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap")
         tapRecognizer?.numberOfTapsRequired = 1
+        
+        if let currentStudent = UdacityClient.sharedInstance().currentStudent {
+            
+            if let mapString = currentStudent.mapString {
+                self.locationTextField.text = mapString
+            }
+            
+            if let mediaURL = currentStudent.mediaURL {
+                self.linkTextField.text = currentStudent.mediaURL!
+            }
+            
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
