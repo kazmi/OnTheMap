@@ -49,7 +49,7 @@ class UdacityClient {
                                 
                             } else {
                                 
-                                completionHandler(success: false, errorString: error?.description)
+                                completionHandler(success: false, errorString: error)
                             }
                             
                         }
@@ -96,7 +96,7 @@ class UdacityClient {
                                 
                             } else {
                                 
-                                completionHandler(success: false, errorString: error?.description)
+                                completionHandler(success: false, errorString: error)
                             }
                             
                         }
@@ -138,10 +138,11 @@ class UdacityClient {
         
         /* Make the request */
         let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+        let task = session.dataTaskWithRequest(request) { data, response, error in
             
-            if downloadError != nil {
-                completionHandler(success: false, errorString: downloadError.description)
+            if error != nil {
+                var errorMessage = "Network Error: " + error.localizedDescription
+                completionHandler(success: false, errorString: errorMessage)
             }
             else {
 
@@ -171,7 +172,8 @@ class UdacityClient {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
             if error != nil {
-                completionHandler(success: false, firstName: nil, lastName: nil, errorString: "Request Timed Out")
+                var errorMessage = "Network Error: " + error.localizedDescription
+                completionHandler(success: false, firstName: nil, lastName: nil, errorString: errorMessage)
             }
             else {
                 let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
@@ -218,10 +220,11 @@ class UdacityClient {
         
         /* Make the request */
         let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request) { data, respose, downloadError in
+        let task = session.dataTaskWithRequest(request) { data, respose, error in
             
-            if let error = downloadError {
-                completionHandler(success: false, uniqueKey: nil, errorString: "Network Error: Request Timed Out")
+            if error != nil {
+                var errorMessage = "Network Error: " + error.localizedDescription
+                completionHandler(success: false, uniqueKey: nil, errorString: errorMessage)
             } else {
                 
                 let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
@@ -267,10 +270,11 @@ class UdacityClient {
         
         /* Make the request */
         let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request) { data, respose, downloadError in
+        let task = session.dataTaskWithRequest(request) { data, respose, error in
             
-            if let error = downloadError {
-                completionHandler(success: false, uniqueKey: nil, errorString: "Network Error: Request Timed Out")
+            if error != nil {
+                var errorMessage = "Network Error: " + error.localizedDescription
+                completionHandler(success: false, uniqueKey: nil, errorString: errorMessage)
             } else {
                 
                 let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
@@ -300,7 +304,7 @@ class UdacityClient {
     
     // MARK: - Parse API
     
-    func getStudentInformation(completionHandler: (result: [StudentInformation]?, error: NSError?) -> Void) {
+    func getStudentInformation(completionHandler: (result: [StudentInformation]?, errorString: String?) -> Void) {
         
         /* Build the URL */
         let urlString = "https://api.parse.com/1/classes/StudentLocation"
@@ -313,10 +317,11 @@ class UdacityClient {
         
         /* Make the request */
         let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+        let task = session.dataTaskWithRequest(request) { data, response, error in
             
-            if downloadError != nil {
-                completionHandler(result: nil, error: downloadError)
+            if error != nil {
+                var errorMessage = "Network Error: " + error.localizedDescription
+                completionHandler(result: nil, errorString: errorMessage)
             }
             else {
                 
@@ -328,9 +333,9 @@ class UdacityClient {
                 /* Use the data */
                 if let results = parsedJSON.valueForKey("results") as? [[String : AnyObject]] {
                     var students = StudentInformation.studentInformationFromResults(results)
-                    completionHandler(result: students, error: nil)
+                    completionHandler(result: students, errorString: nil)
                 } else {
-                    completionHandler(result: nil, error: NSError(domain: "student information parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getStudentInformation"]))
+                    completionHandler(result: nil, errorString: "Server Error: No students exist")
                 }
             }
         }
@@ -340,7 +345,7 @@ class UdacityClient {
         
     }
     
-    func getCurrentStudentInformation(completionHandler: (result: StudentInformation?, error: NSError?) -> Void) {
+    func getCurrentStudentInformation(completionHandler: (result: StudentInformation?, errorString: String?) -> Void) {
         
         /* Parameters */
         let methodParameters = [
@@ -358,12 +363,12 @@ class UdacityClient {
         
         /* Make the request */
         let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+        let task = session.dataTaskWithRequest(request) { data, response, error in
             
             
-            if downloadError != nil {
-                println(downloadError.description)
-                completionHandler(result: nil, error: downloadError)
+            if error != nil {
+                var errorMessage = "Network Error: " + error.localizedDescription
+                completionHandler(result: nil, errorString: errorMessage)
             }
             else {
             
@@ -376,13 +381,13 @@ class UdacityClient {
                 if let results = parsedJSON.valueForKey("results") as? [[String : AnyObject]] {
                     if results.count > 0 {
                         var student = StudentInformation(dictionary: results[0])
-                        completionHandler(result: student, error: nil)
+                        completionHandler(result: student, errorString: nil)
                     }
                     else {
-                        completionHandler(result: nil, error: NSError(domain: "student not found", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not find student for given key"]))
+                        completionHandler(result: nil, errorString: "Server Error: Student does not exist")
                     }
                 } else {
-                    completionHandler(result: nil, error: NSError(domain: "student information parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getStudentInformation"]))
+                    completionHandler(result: nil, errorString: "Server Error: Could not parse Student information")
                 }
             }
             
@@ -393,7 +398,7 @@ class UdacityClient {
         
     }
     
-    func postStudentInformation(student: StudentInformation, completionHandler: (success: Bool, objectID: String?, error: NSError?) -> Void) {
+    func postStudentInformation(student: StudentInformation, completionHandler: (success: Bool, objectID: String?, errorString: String?) -> Void) {
         
         /* Build the URL */
         let urlString = "https://api.parse.com/1/classes/StudentLocation"
@@ -423,7 +428,8 @@ class UdacityClient {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
             if error != nil {
-                completionHandler(success: false, objectID: nil, error: error)
+                var errorMessage = "Network Error: " + error.localizedDescription
+                completionHandler(success: false, objectID: nil, errorString: errorMessage)
             }
             else {
                 /* Parse the data */
@@ -433,10 +439,9 @@ class UdacityClient {
             
                 /* Use the data */
                 if let objectID = parsedJSON.valueForKey("objectId") as? String {
-                    completionHandler(success: true, objectID: objectID, error: nil)
+                    completionHandler(success: true, objectID: objectID, errorString: nil)
                 } else {
-                    completionHandler(success: false, objectID: nil, error: NSError(domain: "StudentLoction create error", code: 0,
-                        userInfo: [NSLocalizedDescriptionKey: "StudentLocation object not created"]))
+                    completionHandler(success: false, objectID: nil, errorString: "Server Error: StudentLocation not created")
                 }
             }
         }
@@ -446,7 +451,7 @@ class UdacityClient {
         
     }
     
-    func putStudentInformation(student: StudentInformation, completionHandler: (success: Bool, error: NSError?) -> Void) {
+    func putStudentInformation(student: StudentInformation, completionHandler: (success: Bool, errorString: String?) -> Void) {
         
         /* Build the URL */
         var objectID = student.objectID!
@@ -477,7 +482,8 @@ class UdacityClient {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
             if error != nil {
-                completionHandler(success: false, error: error)
+                var errorMessage = "Network Error: " + error.localizedDescription
+                completionHandler(success: false, errorString: errorMessage)
             }
             else {
                 /* Parse the data */
@@ -487,10 +493,9 @@ class UdacityClient {
             
                 /* Use the data */
                 if let createdAt = parsedJSON.valueForKey("updatedAt") as? String {
-                    completionHandler(success: true, error: nil)
+                    completionHandler(success: true, errorString: nil)
                 } else {
-                    completionHandler(success: false, error: NSError(domain: "StudentLoction update error", code: 0,
-                        userInfo: [NSLocalizedDescriptionKey: "StudentLocation object not updated"]))
+                    completionHandler(success: false, errorString: "Server Error: StudentLocation not updated")
                 }
             }
         }

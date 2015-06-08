@@ -33,7 +33,8 @@ class SLTableViewController: UITableViewController {
                     self.tableView.reloadData()
                 }
             } else {
-                let alertController = UIAlertController(title: nil, message: error?.localizedDescription,
+                
+                let alertController = UIAlertController(title: nil, message: error,
                     preferredStyle: .Alert)
                 
                 let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in
