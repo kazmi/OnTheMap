@@ -23,6 +23,8 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var submitButton: UIButton!
     
+    var activityIndicator: UIActivityIndicatorView!
+    
     var geocoder: CLGeocoder!
     var studyingLocation: CLLocation? = nil
     
@@ -30,6 +32,10 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+        activityIndicator.center = self.view.center
+        self.view.addSubview(activityIndicator)
         
         geocoder = CLGeocoder()
         
@@ -77,8 +83,15 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func findOnTheMap(sender: AnyObject) {
+        
+        activityIndicator.startAnimating()
+        
         geocoder.geocodeAddressString(locationTextField.text,
             completionHandler: { (placemarks:[AnyObject]!, error: NSError!) -> Void in
+                
+            dispatch_async(dispatch_get_main_queue(), {
+                self.activityIndicator.stopAnimating()
+            })
                 
             if error == nil && placemarks.count > 0 {
                 
