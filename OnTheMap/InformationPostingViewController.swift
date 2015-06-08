@@ -85,11 +85,13 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
     @IBAction func findOnTheMap(sender: AnyObject) {
         
         activityIndicator.startAnimating()
+        self.view.alpha = 0.5
         
         geocoder.geocodeAddressString(locationTextField.text,
             completionHandler: { (placemarks:[AnyObject]!, error: NSError!) -> Void in
                 
             dispatch_async(dispatch_get_main_queue(), {
+                self.view.alpha = 1.0
                 self.activityIndicator.stopAnimating()
             })
                 
