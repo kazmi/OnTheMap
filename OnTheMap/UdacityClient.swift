@@ -143,11 +143,13 @@ class UdacityClient {
             if downloadError != nil {
                 completionHandler(success: false, errorString: downloadError.description)
             }
+            else {
+
+                /* clear current student */
+                self.currentStudent = nil
             
-            /* clear current student */
-            self.currentStudent = nil
-            
-            completionHandler(success: true, errorString: nil)
+                completionHandler(success: true, errorString: nil)
+            }
         }
         
         /* Start the request */
@@ -171,23 +173,24 @@ class UdacityClient {
             if error != nil {
                 completionHandler(success: false, firstName: nil, lastName: nil, errorString: "Request Timed Out")
             }
+            else {
+                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
             
-            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
+                /* Parse the data */
+                var parsingError: NSError? = nil
+                let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
+                    error: &parsingError) as! NSDictionary
             
-            /* Parse the data */
-            var parsingError: NSError? = nil
-            let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
-                error: &parsingError) as! NSDictionary
-            
-            if let user = parsedJSON["user"] as? NSDictionary {
+                if let user = parsedJSON["user"] as? NSDictionary {
                 
-                var firstName = user["first_name"] as? String
-                var lastName = user["last_name"] as? String
+                    var firstName = user["first_name"] as? String
+                    var lastName = user["last_name"] as? String
                 
-                completionHandler(success: true, firstName: firstName, lastName: lastName, errorString: nil)
-            } else {
+                    completionHandler(success: true, firstName: firstName, lastName: lastName, errorString: nil)
+                } else {
                 
-                completionHandler(success: false, firstName: nil, lastName: nil, errorString: "Account not found")
+                    completionHandler(success: false, firstName: nil, lastName: nil, errorString: "Account not found")
+                }
             }
             
         }
@@ -218,7 +221,7 @@ class UdacityClient {
         let task = session.dataTaskWithRequest(request) { data, respose, downloadError in
             
             if let error = downloadError {
-                completionHandler(success: false, uniqueKey: nil, errorString: "Request Timed Out")
+                completionHandler(success: false, uniqueKey: nil, errorString: "Network Error: Request Timed Out")
             } else {
                 
                 let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
@@ -234,7 +237,7 @@ class UdacityClient {
                 } else {
                     if let status = parsedJSON["status"] as? Int {
                         if status == 403 {
-                            completionHandler(success: false, uniqueKey: nil, errorString: "Invalid Credentials")
+                            completionHandler(success: false, uniqueKey: nil, errorString: "Server Error: Invalid Credentials")
                         }
                     }
                 }
@@ -267,7 +270,7 @@ class UdacityClient {
         let task = session.dataTaskWithRequest(request) { data, respose, downloadError in
             
             if let error = downloadError {
-                completionHandler(success: false, uniqueKey: nil, errorString: "Request Timed Out")
+                completionHandler(success: false, uniqueKey: nil, errorString: "Network Error: Request Timed Out")
             } else {
                 
                 let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
@@ -283,7 +286,7 @@ class UdacityClient {
                 } else {
                     if let status = parsedJSON["status"] as? Int {
                         if status == 403 {
-                            completionHandler(success: false, uniqueKey: nil, errorString: "Invalid Credentials")
+                            completionHandler(success: false, uniqueKey: nil, errorString: "Server Error: Invalid Credentials")
                         }
                     }
                 }
@@ -315,20 +318,21 @@ class UdacityClient {
             if downloadError != nil {
                 completionHandler(result: nil, error: downloadError)
             }
+            else {
+                
+                /* Parse the data */
+                var parsingError: NSError? = nil
+                let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
+                    options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
             
-            /* Parse the data */
-            var parsingError: NSError? = nil
-            let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
-                options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
-            
-            /* Use the data */
-            if let results = parsedJSON.valueForKey("results") as? [[String : AnyObject]] {
-                var students = StudentInformation.studentInformationFromResults(results)
-                completionHandler(result: students, error: nil)
-            } else {
-                completionHandler(result: nil, error: NSError(domain: "student information parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getStudentInformation"]))
+                /* Use the data */
+                if let results = parsedJSON.valueForKey("results") as? [[String : AnyObject]] {
+                    var students = StudentInformation.studentInformationFromResults(results)
+                    completionHandler(result: students, error: nil)
+                } else {
+                    completionHandler(result: nil, error: NSError(domain: "student information parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getStudentInformation"]))
+                }
             }
-            
         }
         
         /* Start the request */
@@ -356,26 +360,30 @@ class UdacityClient {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
             
+            
             if downloadError != nil {
+                println(downloadError.description)
                 completionHandler(result: nil, error: downloadError)
             }
+            else {
             
-            /* Parse the data */
-            var parsingError: NSError? = nil
-            let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
-                options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
+                /* Parse the data */
+                var parsingError: NSError? = nil
+                let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
+                    options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
             
-            /* Use the data */
-            if let results = parsedJSON.valueForKey("results") as? [[String : AnyObject]] {
-                if results.count > 0 {
-                    var student = StudentInformation(dictionary: results[0])
-                    completionHandler(result: student, error: nil)
+                /* Use the data */
+                if let results = parsedJSON.valueForKey("results") as? [[String : AnyObject]] {
+                    if results.count > 0 {
+                        var student = StudentInformation(dictionary: results[0])
+                        completionHandler(result: student, error: nil)
+                    }
+                    else {
+                        completionHandler(result: nil, error: NSError(domain: "student not found", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not find student for given key"]))
+                    }
+                } else {
+                    completionHandler(result: nil, error: NSError(domain: "student information parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getStudentInformation"]))
                 }
-                else {
-                    completionHandler(result: nil, error: NSError(domain: "student not found", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not find student for given key"]))
-                }
-            } else {
-                completionHandler(result: nil, error: NSError(domain: "student information parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getStudentInformation"]))
             }
             
         }
@@ -417,20 +425,20 @@ class UdacityClient {
             if error != nil {
                 completionHandler(success: false, objectID: nil, error: error)
             }
+            else {
+                /* Parse the data */
+                var parsingError: NSError? = nil
+                let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
+                    options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
             
-            /* Parse the data */
-            var parsingError: NSError? = nil
-            let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
-                options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
-            
-            /* Use the data */
-            if let objectID = parsedJSON.valueForKey("objectId") as? String {
-                completionHandler(success: true, objectID: objectID, error: nil)
-            } else {
-                completionHandler(success: false, objectID: nil, error: NSError(domain: "StudentLoction create error", code: 0,
-                    userInfo: [NSLocalizedDescriptionKey: "StudentLocation object not created"]))
+                /* Use the data */
+                if let objectID = parsedJSON.valueForKey("objectId") as? String {
+                    completionHandler(success: true, objectID: objectID, error: nil)
+                } else {
+                    completionHandler(success: false, objectID: nil, error: NSError(domain: "StudentLoction create error", code: 0,
+                        userInfo: [NSLocalizedDescriptionKey: "StudentLocation object not created"]))
+                }
             }
-            
         }
         
         /* Start the request */
@@ -471,20 +479,20 @@ class UdacityClient {
             if error != nil {
                 completionHandler(success: false, error: error)
             }
+            else {
+                /* Parse the data */
+                var parsingError: NSError? = nil
+                let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
+                    options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
             
-            /* Parse the data */
-            var parsingError: NSError? = nil
-            let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
-                options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
-            
-            /* Use the data */
-            if let createdAt = parsedJSON.valueForKey("updatedAt") as? String {
-                completionHandler(success: true, error: nil)
-            } else {
-                completionHandler(success: false, error: NSError(domain: "StudentLoction update error", code: 0,
-                    userInfo: [NSLocalizedDescriptionKey: "StudentLocation object not updated"]))
+                /* Use the data */
+                if let createdAt = parsedJSON.valueForKey("updatedAt") as? String {
+                    completionHandler(success: true, error: nil)
+                } else {
+                    completionHandler(success: false, error: NSError(domain: "StudentLoction update error", code: 0,
+                        userInfo: [NSLocalizedDescriptionKey: "StudentLocation object not updated"]))
+                }
             }
-            
         }
         
         /* Start the request */
