@@ -162,6 +162,9 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
             UdacityClient.sharedInstance().putStudentInformation(student) { (success, error) in
                 
                 if success {
+                    
+                    UdacityClient.sharedInstance().currentStudent = student
+                    
                     dispatch_async(dispatch_get_main_queue(), {
                         self.dismissViewControllerAnimated(true, completion: nil)
                     })
@@ -174,6 +177,8 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
             UdacityClient.sharedInstance().postStudentInformation(student) { (success, objectID, error) in
                 
                 if success {
+                    
+                    UdacityClient.sharedInstance().currentStudent = student
                     UdacityClient.sharedInstance().currentStudent?.objectID = objectID!
                     
                     dispatch_async(dispatch_get_main_queue(), {
