@@ -23,45 +23,15 @@ class SLMapViewController: UIViewController, MKMapViewDelegate {
         /* Create and set the logout button */
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Plain, target: self, action: "logoutButtonTouchUp")
         
-        /* Create the set the add pin button */
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "pin"), style: UIBarButtonItemStyle.Plain, target: self, action: "informationPostingButtonTouchUp")
+        /* Create the set the add pin and reload button */
+        self.navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(image: UIImage(named: "reload"), style: UIBarButtonItemStyle.Plain, target: self, action: "loadData"),
+            UIBarButtonItem(image: UIImage(named: "pin"), style: UIBarButtonItemStyle.Plain, target: self, action: "informationPostingButtonTouchUp")
+        ]
         
         if (DataModel.sharedInstance().students.count == 0) {
             
-            var serialQueue = dispatch_queue_create("com.udacity.onthemap.api", DISPATCH_QUEUE_SERIAL)
-            
-            var skips = [0, 100]
-            for skip in skips {
-                dispatch_sync( serialQueue ) {
-                    
-                    UdacityClient.sharedInstance().getStudentInformation (skip: skip) { students, error in
-                        if let students = students {
-                            
-                            DataModel.sharedInstance().students.extend(students)
-                            
-                            if students.count > 0 {
-                                dispatch_async(dispatch_get_main_queue()) {
-                                    NSNotificationCenter.defaultCenter().postNotificationName("studentDataUpdated", object: nil)
-                                }
-                            }
-                            
-                        } else {
-                            
-                            let alertController = UIAlertController(title: nil, message: error,
-                                preferredStyle: .Alert)
-                            
-                            let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in
-                            }
-                            alertController.addAction(okAction)
-                            
-                            dispatch_async(dispatch_get_main_queue()) {
-                                self.presentViewController(alertController, animated: true, completion: nil)
-                            }
-                        }
-                    }
-                    
-                }
-            }
+            loadData()
             
         } else {
     
@@ -73,12 +43,15 @@ class SLMapViewController: UIViewController, MKMapViewDelegate {
     
     func updateMap() {
         
+        self.mapView.removeAnnotations(self.annotations)
         self.generateAnnotations()
         self.mapView.addAnnotations(self.annotations)
 
     }
     
     func generateAnnotations() {
+        
+        annotations.removeAll(keepCapacity: true)
         
         for student in DataModel.sharedInstance().students {
             
@@ -180,6 +153,47 @@ class SLMapViewController: UIViewController, MKMapViewDelegate {
             self.presentViewController(controller, animated: true, completion: nil)
         }
         
+    }
+    
+    func loadData() {
+        
+        DataModel.sharedInstance().students.removeAll(keepCapacity: true)
+        
+        var serialQueue = dispatch_queue_create("com.udacity.onthemap.api", DISPATCH_QUEUE_SERIAL)
+        
+        var skips = [0, 100]
+        for skip in skips {
+            dispatch_sync( serialQueue ) {
+                
+                UdacityClient.sharedInstance().getStudentInformation (skip: skip) { students, error in
+                    if let students = students {
+                        
+                        DataModel.sharedInstance().students.extend(students)
+                        
+                        if students.count > 0 {
+                            dispatch_async(dispatch_get_main_queue()) {
+                                NSNotificationCenter.defaultCenter().postNotificationName("studentDataUpdated", object: nil)
+                            }
+                        }
+                        
+                    } else {
+                        
+                        let alertController = UIAlertController(title: nil, message: error,
+                            preferredStyle: .Alert)
+                        
+                        let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+                        }
+                        alertController.addAction(okAction)
+                        
+                        dispatch_async(dispatch_get_main_queue()) {
+                            self.presentViewController(alertController, animated: true, completion: nil)
+                        }
+                    }
+                }
+                
+            }
+        }
+
     }
 
 }
