@@ -304,10 +304,17 @@ class UdacityClient {
     
     // MARK: - Parse API
     
-    func getStudentInformation(completionHandler: (result: [StudentInformation]?, errorString: String?) -> Void) {
+    func getStudentInformation(skip: Int = 0, completionHandler: (result: [StudentInformation]?, errorString: String?) -> Void) {
+        
+        /* Parameters */
+        let methodParameters = [
+            "limit": "100",
+            "skip": "\(skip)",
+            "order": "-updatedAt"
+        ]
         
         /* Build the URL */
-        let urlString = "https://api.parse.com/1/classes/StudentLocation"
+        let urlString = "https://api.parse.com/1/classes/StudentLocation" + UdacityClient.escapedParameters(methodParameters)
         let url = NSURL(string: urlString)!
         
         /* Configure the request */
