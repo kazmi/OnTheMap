@@ -25,6 +25,8 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
     
     var activityIndicator: UIActivityIndicatorView!
     
+    var alertController: UIAlertController!
+    
     var geocoder: CLGeocoder!
     var studyingLocation: CLLocation? = nil
     
@@ -144,8 +146,7 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
          })
     }
     
-    @IBAction func postInformation(sender: AnyObject) {
-        
+    func postInformationLogic() {
         var studentInfo: [String : AnyObject] = [:]
         studentInfo["objectId"] = UdacityClient.sharedInstance().currentStudent?.objectID
         studentInfo["uniqueKey"] = UdacityClient.sharedInstance().currentStudent?.uniqueKey!
@@ -169,6 +170,11 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
                         self.dismissViewControllerAnimated(true, completion: nil)
                     })
                 }
+                else {
+                    
+                    self.displayErrorMessage(error!)
+                    
+                }
                 
             }
             
@@ -185,11 +191,39 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
                         self.dismissViewControllerAnimated(true, completion: nil)
                     })
                 }
+                else {
+                    
+                    self.displayErrorMessage(error!)
+                    
+                }
                 
             }
             
         }
+    }
+    
+    func displayErrorMessage(errorString: String) {
         
+        self.alertController = UIAlertController(title: nil, message: errorString, preferredStyle: .Alert)
+        let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in }
+        
+        let retryAction = UIAlertAction(title: "Retry", style: .Default) { (action) in
+            dispatch_async(dispatch_get_main_queue(), {
+                self.postInformationLogic()
+            })
+        }
+        
+        self.alertController.addAction(okAction)
+        self.alertController.addAction(retryAction)
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            self.presentViewController(self.alertController, animated: true, completion: nil)
+        })
+        
+    }
+    
+    @IBAction func postInformation(sender: AnyObject) {
+        postInformationLogic()
     }
     
     //#MARK: - Textfield Delegate
