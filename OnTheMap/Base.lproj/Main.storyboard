@@ -110,6 +110,9 @@
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="cZe-Ps-H4U"/>
                                 </connections>
                             </view>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gear" translatesAutoresizingMaskIntoConstraints="NO" id="uNd-Kd-q3Y" userLabel="ActivityIndicator">
+                                <rect key="frame" x="275" y="402" width="50" height="50"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.9882352941176471" green="0.51372549019607838" blue="0.050980392156862744" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -117,6 +120,7 @@
                             <constraint firstAttribute="centerX" secondItem="pkN-jw-2zF" secondAttribute="centerX" id="Fft-pd-Ksa"/>
                             <constraint firstItem="wws-Ze-BbY" firstAttribute="centerX" secondItem="Ytd-f5-xvo" secondAttribute="centerX" id="Hp6-rT-002"/>
                             <constraint firstItem="0D3-Vl-6va" firstAttribute="top" secondItem="Jvp-ed-tnZ" secondAttribute="bottom" constant="6" id="Jb5-Ci-q7m"/>
+                            <constraint firstItem="BMM-R4-34w" firstAttribute="centerX" secondItem="uNd-Kd-q3Y" secondAttribute="centerX" id="Jtc-nN-jnm"/>
                             <constraint firstAttribute="centerX" secondItem="1Wq-J3-uzR" secondAttribute="centerX" id="Ktg-W8-iQ8"/>
                             <constraint firstAttribute="centerX" secondItem="BMM-R4-34w" secondAttribute="centerX" id="PIc-Y9-mZw"/>
                             <constraint firstAttribute="centerX" secondItem="0D3-Vl-6va" secondAttribute="centerX" id="Wa8-Cz-FYJ"/>
@@ -129,6 +133,7 @@
                             <constraint firstAttribute="centerX" secondItem="Ytd-f5-xvo" secondAttribute="centerX" id="m1S-a3-ONH"/>
                             <constraint firstItem="1Wq-J3-uzR" firstAttribute="width" secondItem="Jvp-ed-tnZ" secondAttribute="width" id="oHz-hp-UGm"/>
                             <constraint firstItem="1Wq-J3-uzR" firstAttribute="top" secondItem="0D3-Vl-6va" secondAttribute="bottom" constant="6" id="ost-8d-kOZ"/>
+                            <constraint firstItem="BMM-R4-34w" firstAttribute="centerY" secondItem="uNd-Kd-q3Y" secondAttribute="centerY" constant="-3" id="tAK-yV-xUa"/>
                             <constraint firstItem="Jvp-ed-tnZ" firstAttribute="top" secondItem="Ytd-f5-xvo" secondAttribute="bottom" constant="8" symbolic="YES" id="ucA-Da-fZw"/>
                             <constraint firstItem="0D3-Vl-6va" firstAttribute="width" secondItem="Jvp-ed-tnZ" secondAttribute="width" id="vAj-Yc-QuC"/>
                             <constraint firstItem="dDY-h4-dZA" firstAttribute="width" secondItem="1Wq-J3-uzR" secondAttribute="width" id="zPZ-pg-rxb"/>
@@ -136,8 +141,11 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="uNd-Kd-q3Y" id="C6p-kZ-RXq"/>
                         <outlet property="debugLabel" destination="BMM-R4-34w" id="4V5-4k-zXe"/>
                         <outlet property="emailTextField" destination="Jvp-ed-tnZ" id="eO8-v6-3LR"/>
+                        <outlet property="facebookLoginButton" destination="pkN-jw-2zF" id="PD0-WG-ouB"/>
+                        <outlet property="logginButton" destination="1Wq-J3-uzR" id="8GW-Jw-JBR"/>
                         <outlet property="passwordTextField" destination="0D3-Vl-6va" id="SuO-aS-Pm7"/>
                     </connections>
                 </viewController>
@@ -518,6 +526,7 @@ Are You Studying Today?</string>
     </scenes>
     <resources>
         <image name="collection" width="30" height="30"/>
+        <image name="gear" width="50" height="50"/>
         <image name="map" width="48" height="30"/>
         <image name="pin" width="32" height="32"/>
         <image name="table" width="30" height="30"/>

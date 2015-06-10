@@ -13,9 +13,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
 
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var logginButton: UIButton!
+    @IBOutlet weak var facebookLoginButton: FBSDKLoginButton!
     @IBOutlet weak var debugLabel: UILabel!
+    @IBOutlet weak var activityIndicator: UIImageView!
     
     var tapRecognizer: UITapGestureRecognizer? = nil
+    
+    var alertController: UIAlertController!
     
     /* to support smaller resolution devices */
     var keyboardAdjusted = false
@@ -36,6 +41,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
         
         tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap")
         tapRecognizer?.numberOfTapsRequired = 1
+        
+        alertController = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+        let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in }
+        alertController.addAction(okAction)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -53,22 +62,32 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
     //#MARK:- Login
     
     @IBAction func loginButtonAction(sender: AnyObject) {
-
-        debugLabel.text = ""
+        
         self.view.endEditing(true)
         
         if emailTextField.text.isEmpty {
-            debugLabel.text = "Email Empty"
+            self.alertController?.title = "Client Error: Email Empty"
+            self.presentViewController(self.alertController, animated: true, completion: nil)
         } else if passwordTextField.text.isEmpty {
-            debugLabel.text = "Password Empty"
+            self.alertController?.title = "Client Error: Password Empty"
+            self.presentViewController(self.alertController, animated: true, completion: nil)
         } else {
+            
+            startLoginAnimation()
+            
             UdacityClient.sharedInstance().authenticateWithCompletionHandler(
                 emailTextField.text, password: passwordTextField.text) { (success, errorString) in
+                    
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.stopLoginAnimation()
+                })
+
                 if success {
                     self.completeLogin()
                 } else {
                     dispatch_async(dispatch_get_main_queue(), {
-                        self.debugLabel.text = errorString
+                        self.alertController?.title = errorString
+                        self.presentViewController(self.alertController, animated: true, completion: nil)
                     })
                 }
             }
@@ -80,14 +99,25 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
 
         if((FBSDKAccessToken.currentAccessToken()) != nil) {
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                self.startLoginAnimation()
+            })
+            
             let token = FBSDKAccessToken.currentAccessToken().tokenString
             
             UdacityClient.sharedInstance().authenticateWithCompletionHandler(token) { (success, errorString ) in
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.stopLoginAnimation()
+                })
+                
                 if success {
                     self.completeLogin()
                 } else {
                     dispatch_async(dispatch_get_main_queue(), {
-                        self.debugLabel.text = errorString
+                        self.alertController?.title = errorString
+                        self.presentViewController(self.alertController, animated: true, completion: nil)
                     })
                 }
             }
@@ -107,6 +137,55 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
             
         })
     }
+    
+    func startLoginAnimation() {
+        
+        UIView.animateWithDuration(1.0, animations: {
+            self.emailTextField.alpha = 0.5
+            self.passwordTextField.alpha = 0.5
+            self.logginButton.alpha = 0.5
+        })
+        
+        self.logginButton.enabled = false
+        self.facebookLoginButton.enabled = false
+        activityIndicator.hidden = false
+        
+        // The full rotation animation was implemented after following
+        // this http://mathewsanders.com/animations-in-swift-part-two/
+        
+        UIView.animateKeyframesWithDuration(5.0, delay: 0.0,
+            options: UIViewKeyframeAnimationOptions.Repeat, animations: {
+                
+                let fullRotation = CGFloat(M_PI * 2)
+                
+                UIView.addKeyframeWithRelativeStartTime(0, relativeDuration: 1/3, animations: {
+                    self.activityIndicator.transform = CGAffineTransformMakeRotation(1/3 * fullRotation)
+                })
+                UIView.addKeyframeWithRelativeStartTime(1/3, relativeDuration: 1/3, animations: {
+                    self.activityIndicator.transform = CGAffineTransformMakeRotation(2/3 * fullRotation)
+                })
+                UIView.addKeyframeWithRelativeStartTime(2/3, relativeDuration: 1/3, animations: {
+                    self.activityIndicator.transform = CGAffineTransformMakeRotation(3/3 * fullRotation)
+                })
+                
+            }, completion: nil)
+        
+    }
+    
+    func stopLoginAnimation() {
+        
+        UIView.animateWithDuration(1.0, animations: {
+            self.emailTextField.alpha = 1.0
+            self.passwordTextField.alpha = 1.0
+            self.logginButton.alpha = 1.0
+        })
+        
+        self.activityIndicator.hidden = true
+        self.logginButton.enabled = true
+        self.facebookLoginButton.enabled = true
+        
+    }
+
     
     //#MARK:- Sign Up
     
