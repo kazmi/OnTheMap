@@ -108,10 +108,21 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
                 
                 var region = MKCoordinateRegion()
                 region.center = placemark.location.coordinate
-                /* the delta values are assigned through trial and error */
-                region.span.latitudeDelta = 0.5
-                region.span.longitudeDelta = 0.5
                 
+                /* The app zooms the map into an appropriate region based 
+                   on the available information */
+
+                if let thoroughfare = placemark.thoroughfare {
+                    region.span.latitudeDelta = 0.2
+                    region.span.longitudeDelta = 0.2
+                } else if let locality = placemark.locality {
+                    region.span.latitudeDelta = 0.5
+                    region.span.longitudeDelta = 0.5
+                } else {
+                    region.span.latitudeDelta = 12.0
+                    region.span.longitudeDelta = 12.0
+                }
+
                 dispatch_async(dispatch_get_main_queue(), {
                     
                     self.cancelButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
