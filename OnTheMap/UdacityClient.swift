@@ -117,6 +117,8 @@ class UdacityClient {
     func logoutWithCompletionHandler(completionHandler: (success: Bool, errorString: String?) -> Void) {
         
         /* log out from facebook */
+        var facebookSession = FBSDKLoginManager()
+        facebookSession.logOut()
         FBSDKAccessToken.setCurrentAccessToken(nil)
         
         /* Build the URL */
@@ -183,10 +185,10 @@ class UdacityClient {
                 let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
                     error: &parsingError) as! NSDictionary
             
-                if let user = parsedJSON["user"] as? NSDictionary {
+                if let user = parsedJSON[JSONResponseKeys.User] as? NSDictionary {
                 
-                    var firstName = user["first_name"] as? String
-                    var lastName = user["last_name"] as? String
+                    var firstName = user[JSONResponseKeys.FirstName] as? String
+                    var lastName = user[JSONResponseKeys.LastName] as? String
                 
                     completionHandler(success: true, firstName: firstName, lastName: lastName, errorString: nil)
                 } else {
@@ -215,7 +217,7 @@ class UdacityClient {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         var jsonifyError: NSError? = nil
-        let jsonBody : [String:AnyObject] = ["facebook_mobile": ["access_token": token]]
+        let jsonBody : [String:AnyObject] = [JSONBodyKeys.FacebookMobile: [JSONBodyKeys.AccessToken: token]]
         request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
         
         /* Make the request */
@@ -234,11 +236,11 @@ class UdacityClient {
                 let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
                     error: &parsingError) as! NSDictionary
                 
-                if let account = parsedJSON["account"] as? NSDictionary {
-                    var key = account.valueForKey("key") as? String
+                if let account = parsedJSON[JSONResponseKeys.Account] as? NSDictionary {
+                    var key = account.valueForKey(JSONResponseKeys.Key) as? String
                     completionHandler(success: true, uniqueKey: key, errorString: nil)
                 } else {
-                    if let status = parsedJSON["status"] as? Int {
+                    if let status = parsedJSON[JSONResponseKeys.Status] as? Int {
                         if status == 403 {
                             completionHandler(success: false, uniqueKey: nil, errorString: "Server Error: Invalid Credentials")
                         }
@@ -265,7 +267,7 @@ class UdacityClient {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         var jsonifyError: NSError? = nil
-        let jsonBody : [String:AnyObject] = ["udacity": ["username": email, "password": password]]
+        let jsonBody : [String:AnyObject] = [JSONBodyKeys.Udacity: [JSONBodyKeys.UserName: email, JSONBodyKeys.Password: password]]
         request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
         
         /* Make the request */
@@ -284,11 +286,11 @@ class UdacityClient {
                 let parsedJSON = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions.AllowFragments,
                     error: &parsingError) as! NSDictionary
                 
-                if let account = parsedJSON["account"] as? NSDictionary {
-                    var key = account.valueForKey("key") as? String
+                if let account = parsedJSON[JSONResponseKeys.Account] as? NSDictionary {
+                    var key = account.valueForKey(JSONResponseKeys.Key) as? String
                     completionHandler(success: true, uniqueKey: key, errorString: nil)
                 } else {
-                    if let status = parsedJSON["status"] as? Int {
+                    if let status = parsedJSON[JSONResponseKeys.Status] as? Int {
                         if status == 403 {
                             completionHandler(success: false, uniqueKey: nil, errorString: "Server Error: Invalid Credentials")
                         }
@@ -308,9 +310,9 @@ class UdacityClient {
         
         /* Parameters */
         let methodParameters = [
-            "limit": "100",
-            "skip": "\(skip)",
-            "order": "-updatedAt"
+            ParameterKeys.Limit: "100",
+            ParameterKeys.Skip: "\(skip)",
+            ParameterKeys.Order: "-updatedAt"
         ]
         
         /* Build the URL */
@@ -319,8 +321,8 @@ class UdacityClient {
         
         /* Configure the request */
         let request = NSMutableURLRequest(URL: url)
-        request.addValue("ENTER_APP_ID_HERE", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("ENTER_REST_API_KEY_HERE", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue(Constants.AppID, forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue(Constants.RESTApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         
         /* Make the request */
         let session = NSURLSession.sharedSession()
@@ -336,9 +338,9 @@ class UdacityClient {
                 var parsingError: NSError? = nil
                 let parsedJSON = NSJSONSerialization.JSONObjectWithData(data,
                     options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
-            
+                
                 /* Use the data */
-                if let results = parsedJSON.valueForKey("results") as? [[String : AnyObject]] {
+                if let results = parsedJSON.valueForKey(JSONResponseKeys.Results) as? [[String : AnyObject]] {
                     var students = StudentInformation.studentInformationFromResults(results)
                     completionHandler(result: students, errorString: nil)
                 } else {
@@ -356,7 +358,7 @@ class UdacityClient {
         
         /* Parameters */
         let methodParameters = [
-            "where": "{\"uniqueKey\":\"\(self.currentStudent!.uniqueKey!)\"}"
+            ParameterKeys.Where: "{\"uniqueKey\":\"\(self.currentStudent!.uniqueKey!)\"}"
         ]
         
         /* Build the URL */
@@ -365,8 +367,8 @@ class UdacityClient {
         
         /* Configure the request */
         let request = NSMutableURLRequest(URL: url)
-        request.addValue("ENTER_APP_ID_HERE", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("ENTER_REST_API_KEY_HERE", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue(Constants.AppID, forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue(Constants.RESTApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         
         /* Make the request */
         let session = NSURLSession.sharedSession()
@@ -385,7 +387,7 @@ class UdacityClient {
                     options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
             
                 /* Use the data */
-                if let results = parsedJSON.valueForKey("results") as? [[String : AnyObject]] {
+                if let results = parsedJSON.valueForKey(JSONResponseKeys.Results) as? [[String : AnyObject]] {
                     if results.count > 0 {
                         var student = StudentInformation(dictionary: results[0])
                         completionHandler(result: student, errorString: nil)
@@ -414,20 +416,20 @@ class UdacityClient {
         /* Configure the request */
         let request = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "POST"
-        request.addValue("ENTER_APP_ID_HERE", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("ENTER_REST_API_KEY_HERE", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue(Constants.AppID, forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue(Constants.RESTApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         var jsonifyError: NSError? = nil
         let jsonBody : [String:AnyObject] =
         [
-            "uniqueKey": student.uniqueKey!,
-            "firstName": student.firstName!,
-            "lastName": student.lastName!,
-            "mapString": student.mapString!,
-            "mediaURL": student.mediaURL!,
-            "latitude": student.latitude!,
-            "longitude": student.longitude!
+            JSONBodyKeys.UniqueKey: student.uniqueKey!,
+            JSONBodyKeys.FirstName: student.firstName!,
+            JSONBodyKeys.LastName: student.lastName!,
+            JSONBodyKeys.MapString: student.mapString!,
+            JSONBodyKeys.MediaURL: student.mediaURL!,
+            JSONBodyKeys.Latitude: student.latitude!,
+            JSONBodyKeys.Longitude: student.longitude!
         ]
         request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
         
@@ -445,7 +447,7 @@ class UdacityClient {
                     options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
             
                 /* Use the data */
-                if let objectID = parsedJSON.valueForKey("objectId") as? String {
+                if let objectID = parsedJSON.valueForKey(JSONResponseKeys.ObjectID) as? String {
                     completionHandler(success: true, objectID: objectID, errorString: nil)
                 } else {
                     completionHandler(success: false, objectID: nil, errorString: "Server Error: StudentLocation not created")
@@ -468,20 +470,20 @@ class UdacityClient {
         /* Configure the request */
         let request = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "PUT"
-        request.addValue("ENTER_APP_ID_HERE", forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue("ENTER_REST_API_KEY_HERE", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue(Constants.AppID, forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue(Constants.RESTApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         var jsonifyError: NSError? = nil
         let jsonBody : [String:AnyObject] =
         [
-            "uniqueKey": student.uniqueKey!,
-            "firstName": student.firstName!,
-            "lastName": student.lastName!,
-            "mapString": student.mapString!,
-            "mediaURL": student.mediaURL!,
-            "latitude": student.latitude!,
-            "longitude": student.longitude!
+            JSONBodyKeys.UniqueKey: student.uniqueKey!,
+            JSONBodyKeys.FirstName: student.firstName!,
+            JSONBodyKeys.LastName: student.lastName!,
+            JSONBodyKeys.MapString: student.mapString!,
+            JSONBodyKeys.MediaURL: student.mediaURL!,
+            JSONBodyKeys.Latitude: student.latitude!,
+            JSONBodyKeys.Longitude: student.longitude!
         ]
         request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
         
@@ -499,7 +501,7 @@ class UdacityClient {
                     options: NSJSONReadingOptions.AllowFragments, error: &parsingError) as! NSDictionary
             
                 /* Use the data */
-                if let createdAt = parsedJSON.valueForKey("updatedAt") as? String {
+                if let createdAt = parsedJSON.valueForKey(JSONResponseKeys.UpdatedAt) as? String {
                     completionHandler(success: true, errorString: nil)
                 } else {
                     completionHandler(success: false, errorString: "Server Error: StudentLocation not updated")
