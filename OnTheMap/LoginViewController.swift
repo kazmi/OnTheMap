@@ -18,9 +18,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
     @IBOutlet weak var debugLabel: UILabel!
     @IBOutlet weak var activityIndicator: UIImageView!
     
-    var tapRecognizer: UITapGestureRecognizer? = nil
+    @IBOutlet weak var loginView: UIView!
+    @IBOutlet weak var errorView: UIView!
+    @IBOutlet weak var errorViewTopConstraint: NSLayoutConstraint!
     
-    var alertController: UIAlertController!
+    @IBOutlet weak var errorMessageLabel: UILabel!
+    @IBOutlet weak var retryButton: UIButton!
+    
+    var tapRecognizer: UITapGestureRecognizer? = nil
     
     /* to support smaller resolution devices */
     var keyboardAdjusted = false
@@ -28,6 +33,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        errorViewTopConstraint.constant += errorView.frame.size.height
         
         let placeHolderTextColor: UIColor = UIColor.whiteColor()
         
@@ -41,10 +48,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
         
         tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap")
         tapRecognizer?.numberOfTapsRequired = 1
-        
-        alertController = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-        let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in }
-        alertController.addAction(okAction)
+
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -66,11 +70,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
         self.view.endEditing(true)
         
         if emailTextField.text.isEmpty {
-            self.alertController?.title = "Client Error: Email Empty"
-            self.presentViewController(self.alertController, animated: true, completion: nil)
+            self.showErrorView("Client Error: Email Empty")
         } else if passwordTextField.text.isEmpty {
-            self.alertController?.title = "Client Error: Password Empty"
-            self.presentViewController(self.alertController, animated: true, completion: nil)
+            self.showErrorView("Client Error: Password Empty")
         } else {
             
             startLoginAnimation()
@@ -86,8 +88,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
                     self.completeLogin()
                 } else {
                     dispatch_async(dispatch_get_main_queue(), {
-                        self.alertController?.title = errorString
-                        self.presentViewController(self.alertController, animated: true, completion: nil)
+                        self.showErrorView(errorString!)
                     })
                 }
             }
@@ -116,8 +117,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
                     self.completeLogin()
                 } else {
                     dispatch_async(dispatch_get_main_queue(), {
-                        self.alertController?.title = errorString
-                        self.presentViewController(self.alertController, animated: true, completion: nil)
+                        self.showErrorView(errorString!)
                     })
                 }
             }
@@ -186,6 +186,36 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
         
     }
 
+    //#MARK:- Error View
+    
+    func showErrorView(errorString: String, showRetry: Bool = false) {
+        
+        errorMessageLabel.text = errorString
+        retryButton.hidden = !showRetry
+        
+        self.errorViewTopConstraint.constant = 8
+        self.errorView.setNeedsUpdateConstraints()
+        
+        UIView.animateWithDuration(1.0,
+            delay: 0.0, usingSpringWithDamping: 0.5,
+            initialSpringVelocity: 1.0,
+            options: UIViewAnimationOptions.CurveEaseInOut,
+            animations: {
+                self.errorView.layoutIfNeeded()
+            },
+            completion: nil)
+
+    }
+    
+    @IBAction func okButton(sender: AnyObject) {
+        
+        self.errorViewTopConstraint.constant += errorView.frame.size.height
+        self.errorView.setNeedsUpdateConstraints()
+        
+        UIView.animateWithDuration(1.0, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+            self.errorView.layoutIfNeeded()
+            }, completion: nil)
+    }
     
     //#MARK:- Sign Up
     
