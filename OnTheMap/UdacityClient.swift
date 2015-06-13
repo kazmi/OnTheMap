@@ -9,6 +9,7 @@
 import Foundation
 import FBSDKLoginKit
 
+
 class UdacityClient {
     
     var currentStudent: StudentInformation? = nil
@@ -21,9 +22,9 @@ class UdacityClient {
         return Singleton.sharedInstance
     }
     
-    func authenticateWithCompletionHandler(email: String, password: String, completionHandler: (success: Bool, errorString: String?) -> Void) {
+    func authenticateWithCompletionHandler(email: String, password: String, completionHandler: (success: Bool, error: NSError?) -> Void) {
     
-        self.getAccountKey(email, password: password) { (success, uniqueKey, errorString) in
+        self.getAccountKey(email, password: password) { (success, uniqueKey, error) in
             
             if success {
                 
@@ -31,7 +32,7 @@ class UdacityClient {
                 
                 self.currentStudent?.uniqueKey = uniqueKey
                 
-                self.getCurrentStudentName() { (success, firstName, lastName, errorString) in
+                self.getCurrentStudentName() { (success, firstName, lastName, error) in
                     
                     if success {
                         
@@ -41,36 +42,36 @@ class UdacityClient {
                         
                         self.getCurrentStudentInformation() { (student, error) in
                             
-                            if errorString == nil {
+                            if error == nil {
                                 
                                 self.currentStudent = student
                                 
-                                completionHandler(success: true, errorString: nil)
+                                completionHandler(success: true, error: nil)
                                 
                             } else {
                                 
-                                completionHandler(success: false, errorString: error)
+                                completionHandler(success: false, error: error)
                             }
                             
                         }
 
                     } else {
-                        completionHandler(success: success, errorString: errorString)
+                        completionHandler(success: success, error: error)
                     }
 
                 }
                 
             } else {
-                completionHandler(success: success, errorString: errorString)
+                completionHandler(success: success, error: error)
             }
         }
         
         
     }
     
-    func authenticateWithCompletionHandler(token: String, completionHandler: (success: Bool, errorString: String?) -> Void) {
+    func authenticateWithCompletionHandler(token: String, completionHandler: (success: Bool, error: NSError?) -> Void) {
         
-        self.getAccountKey(token) { (success, uniqueKey, errorString) in
+        self.getAccountKey(token) { (success, uniqueKey, error) in
             
             if success {
                 
@@ -78,7 +79,7 @@ class UdacityClient {
                 
                 self.currentStudent?.uniqueKey = uniqueKey
                 
-                self.getCurrentStudentName() { (success, firstName, lastName, errorString) in
+                self.getCurrentStudentName() { (success, firstName, lastName, error) in
                     
                     if success {
                         
@@ -88,33 +89,33 @@ class UdacityClient {
                         
                         self.getCurrentStudentInformation() { (student, error) in
                             
-                            if errorString == nil {
+                            if error == nil {
                                 
                                 self.currentStudent = student
                                 
-                                completionHandler(success: true, errorString: nil)
+                                completionHandler(success: true, error: nil)
                                 
                             } else {
                                 
-                                completionHandler(success: false, errorString: error)
+                                completionHandler(success: false, error: error)
                             }
                             
                         }
                         
                     } else {
-                        completionHandler(success: success, errorString: errorString)
+                        completionHandler(success: success, error: error)
                     }
                     
                 }
                 
             } else {
-                completionHandler(success: success, errorString: errorString)
+                completionHandler(success: success, error: error)
             }
         }
 
     }
     
-    func logoutWithCompletionHandler(completionHandler: (success: Bool, errorString: String?) -> Void) {
+    func logoutWithCompletionHandler(completionHandler: (success: Bool, error: NSError?) -> Void) {
         
         /* log out from facebook */
         var facebookSession = FBSDKLoginManager()
@@ -143,15 +144,22 @@ class UdacityClient {
         let task = session.dataTaskWithRequest(request) { data, response, error in
             
             if error != nil {
-                var errorMessage = "Network Error: " + error.localizedDescription
-                completionHandler(success: false, errorString: errorMessage)
+                
+                let userInfo: NSDictionary = [
+                    NSLocalizedDescriptionKey: error.localizedDescription]
+                
+                var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Network.rawValue,
+                    userInfo: userInfo as [NSObject : AnyObject])
+                
+                completionHandler(success: false, error: errorObject)
+                
             }
             else {
 
                 /* clear current student */
                 self.currentStudent = nil
             
-                completionHandler(success: true, errorString: nil)
+                completionHandler(success: true, error: nil)
             }
         }
         
@@ -161,7 +169,7 @@ class UdacityClient {
     
     // MARK: - Udacity API
     
-    func getCurrentStudentName(completionHandler: (success: Bool, firstName: String?, lastName: String?, errorString: String?) -> Void) {
+    func getCurrentStudentName(completionHandler: (success: Bool, firstName: String?, lastName: String?, error: NSError?) -> Void) {
         
         /* Build the URL */
         let urlString = "https://www.udacity.com/api/users/\(self.currentStudent!.uniqueKey!)"
@@ -174,8 +182,15 @@ class UdacityClient {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
             if error != nil {
-                var errorMessage = "Network Error: " + error.localizedDescription
-                completionHandler(success: false, firstName: nil, lastName: nil, errorString: errorMessage)
+                
+                let userInfo: NSDictionary = [
+                    NSLocalizedDescriptionKey: error.localizedDescription]
+                
+                var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Network.rawValue,
+                    userInfo: userInfo as [NSObject : AnyObject])
+                
+                completionHandler(success: false, firstName: nil, lastName: nil, error: errorObject)
+                
             }
             else {
                 let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
@@ -190,10 +205,17 @@ class UdacityClient {
                     var firstName = user[JSONResponseKeys.FirstName] as? String
                     var lastName = user[JSONResponseKeys.LastName] as? String
                 
-                    completionHandler(success: true, firstName: firstName, lastName: lastName, errorString: nil)
+                    completionHandler(success: true, firstName: firstName, lastName: lastName, error: nil)
                 } else {
                 
-                    completionHandler(success: false, firstName: nil, lastName: nil, errorString: "Account not found")
+                    let userInfo: NSDictionary = [
+                        NSLocalizedDescriptionKey: "Account not found"]
+                    
+                    var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Server.rawValue,
+                        userInfo: userInfo as [NSObject : AnyObject])
+                    
+                    completionHandler(success: false, firstName: nil, lastName: nil, error: errorObject)
+
                 }
             }
             
@@ -204,7 +226,7 @@ class UdacityClient {
         
     }
     
-    func getAccountKey(token: String, completionHandler: (success: Bool, uniqueKey: String?, errorString: String?) -> Void) {
+    func getAccountKey(token: String, completionHandler: (success: Bool, uniqueKey: String?, error: NSError?) -> Void) {
         
         /* Build the URL */
         let urlString = "https://www.udacity.com/api/session"
@@ -225,8 +247,15 @@ class UdacityClient {
         let task = session.dataTaskWithRequest(request) { data, respose, error in
             
             if error != nil {
-                var errorMessage = "Network Error: " + error.localizedDescription
-                completionHandler(success: false, uniqueKey: nil, errorString: errorMessage)
+                
+                let userInfo: NSDictionary = [
+                    NSLocalizedDescriptionKey: error.localizedDescription]
+                
+                var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Network.rawValue,
+                    userInfo: userInfo as [NSObject : AnyObject])
+                
+                completionHandler(success: false, uniqueKey: nil, error: errorObject)
+                
             } else {
                 
                 let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
@@ -238,11 +267,17 @@ class UdacityClient {
                 
                 if let account = parsedJSON[JSONResponseKeys.Account] as? NSDictionary {
                     var key = account.valueForKey(JSONResponseKeys.Key) as? String
-                    completionHandler(success: true, uniqueKey: key, errorString: nil)
+                    completionHandler(success: true, uniqueKey: key, error: nil)
                 } else {
                     if let status = parsedJSON[JSONResponseKeys.Status] as? Int {
                         if status == 403 {
-                            completionHandler(success: false, uniqueKey: nil, errorString: "Server Error: Invalid Credentials")
+                            let userInfo: NSDictionary = [
+                                NSLocalizedDescriptionKey: "Invalid Credentials"]
+                            
+                            var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Server.rawValue,
+                                userInfo: userInfo as [NSObject : AnyObject])
+                            
+                            completionHandler(success: false, uniqueKey: nil, error: errorObject)
                         }
                     }
                 }
@@ -254,7 +289,7 @@ class UdacityClient {
         
     }
     
-    func getAccountKey(email: String, password: String, completionHandler: (success: Bool, uniqueKey: String?, errorString: String?) -> Void) {
+    func getAccountKey(email: String, password: String, completionHandler: (success: Bool, uniqueKey: String?, error: NSError?) -> Void) {
         
         /* Build the URL */
         let urlString = "https://www.udacity.com/api/session"
@@ -275,8 +310,13 @@ class UdacityClient {
         let task = session.dataTaskWithRequest(request) { data, respose, error in
             
             if error != nil {
-                var errorMessage = "Network Error: " + error.localizedDescription
-                completionHandler(success: false, uniqueKey: nil, errorString: errorMessage)
+                let userInfo: NSDictionary = [
+                    NSLocalizedDescriptionKey: error.localizedDescription]
+                
+                var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Network.rawValue,
+                    userInfo: userInfo as [NSObject : AnyObject])
+
+                completionHandler(success: false, uniqueKey: nil, error: errorObject)
             } else {
                 
                 let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
@@ -288,12 +328,20 @@ class UdacityClient {
                 
                 if let account = parsedJSON[JSONResponseKeys.Account] as? NSDictionary {
                     var key = account.valueForKey(JSONResponseKeys.Key) as? String
-                    completionHandler(success: true, uniqueKey: key, errorString: nil)
+                    completionHandler(success: true, uniqueKey: key, error: nil)
                 } else {
                     if let status = parsedJSON[JSONResponseKeys.Status] as? Int {
+                        
                         if status == 403 {
-                            completionHandler(success: false, uniqueKey: nil, errorString: "Server Error: Invalid Credentials")
+                            let userInfo: NSDictionary = [
+                                NSLocalizedDescriptionKey: "Invalid Credentials"]
+                            
+                            var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Server.rawValue,
+                                userInfo: userInfo as [NSObject : AnyObject])
+                            
+                            completionHandler(success: false, uniqueKey: nil, error: errorObject)
                         }
+                        
                     }
                 }
             }
@@ -306,7 +354,7 @@ class UdacityClient {
     
     // MARK: - Parse API
     
-    func getStudentInformation(skip: Int = 0, completionHandler: (result: [StudentInformation]?, errorString: String?) -> Void) {
+    func getStudentInformation(skip: Int = 0, completionHandler: (result: [StudentInformation]?, error: NSError?) -> Void) {
         
         /* Parameters */
         let methodParameters = [
@@ -329,8 +377,15 @@ class UdacityClient {
         let task = session.dataTaskWithRequest(request) { data, response, error in
             
             if error != nil {
-                var errorMessage = "Network Error: " + error.localizedDescription
-                completionHandler(result: nil, errorString: errorMessage)
+                
+                let userInfo: NSDictionary = [
+                    NSLocalizedDescriptionKey: error.localizedDescription]
+                
+                var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Network.rawValue,
+                    userInfo: userInfo as [NSObject : AnyObject])
+                
+                completionHandler(result: nil, error: errorObject)
+                
             }
             else {
                 
@@ -342,9 +397,15 @@ class UdacityClient {
                 /* Use the data */
                 if let results = parsedJSON.valueForKey(JSONResponseKeys.Results) as? [[String : AnyObject]] {
                     var students = StudentInformation.studentInformationFromResults(results)
-                    completionHandler(result: students, errorString: nil)
+                    completionHandler(result: students, error: nil)
                 } else {
-                    completionHandler(result: nil, errorString: "Server Error: No students exist")
+                    let userInfo: NSDictionary = [
+                        NSLocalizedDescriptionKey: "No students exist"]
+                    
+                    var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Server.rawValue,
+                        userInfo: userInfo as [NSObject : AnyObject])
+                    
+                    completionHandler(result: nil, error: errorObject)
                 }
             }
         }
@@ -354,7 +415,7 @@ class UdacityClient {
         
     }
     
-    func getCurrentStudentInformation(completionHandler: (result: StudentInformation?, errorString: String?) -> Void) {
+    func getCurrentStudentInformation(completionHandler: (result: StudentInformation?, error: NSError?) -> Void) {
         
         /* Parameters */
         let methodParameters = [
@@ -376,8 +437,13 @@ class UdacityClient {
             
             
             if error != nil {
-                var errorMessage = "Network Error: " + error.localizedDescription
-                completionHandler(result: nil, errorString: errorMessage)
+                let userInfo: NSDictionary = [
+                    NSLocalizedDescriptionKey: error.localizedDescription]
+                
+                var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Network.rawValue,
+                    userInfo: userInfo as [NSObject : AnyObject])
+                
+                completionHandler(result: nil, error: errorObject)
             }
             else {
             
@@ -390,13 +456,29 @@ class UdacityClient {
                 if let results = parsedJSON.valueForKey(JSONResponseKeys.Results) as? [[String : AnyObject]] {
                     if results.count > 0 {
                         var student = StudentInformation(dictionary: results[0])
-                        completionHandler(result: student, errorString: nil)
+                        completionHandler(result: student, error: nil)
                     }
                     else {
-                        completionHandler(result: nil, errorString: "Server Error: Student does not exist")
+                        
+                        let userInfo: NSDictionary = [
+                            NSLocalizedDescriptionKey: "Student does not exist"]
+                        
+                        var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Server.rawValue,
+                            userInfo: userInfo as [NSObject : AnyObject])
+                        
+                        completionHandler(result: nil, error: errorObject)
+                        
                     }
                 } else {
-                    completionHandler(result: nil, errorString: "Server Error: Could not parse Student information")
+                    
+                    let userInfo: NSDictionary = [
+                        NSLocalizedDescriptionKey: "Could not parse Student information"]
+                    
+                    var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Server.rawValue,
+                        userInfo: userInfo as [NSObject : AnyObject])
+                    
+                    completionHandler(result: nil, error: errorObject)
+
                 }
             }
             
@@ -407,7 +489,7 @@ class UdacityClient {
         
     }
     
-    func postStudentInformation(student: StudentInformation, completionHandler: (success: Bool, objectID: String?, errorString: String?) -> Void) {
+    func postStudentInformation(student: StudentInformation, completionHandler: (success: Bool, objectID: String?, error: NSError?) -> Void) {
         
         /* Build the URL */
         let urlString = "https://api.parse.com/1/classes/StudentLocation"
@@ -437,8 +519,15 @@ class UdacityClient {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
             if error != nil {
-                var errorMessage = "Network Error: " + error.localizedDescription
-                completionHandler(success: false, objectID: nil, errorString: errorMessage)
+                
+                let userInfo: NSDictionary = [
+                    NSLocalizedDescriptionKey: error.localizedDescription]
+                
+                var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Network.rawValue,
+                    userInfo: userInfo as [NSObject : AnyObject])
+                
+                completionHandler(success: false, objectID: nil, error: errorObject)
+                
             }
             else {
                 /* Parse the data */
@@ -448,9 +537,16 @@ class UdacityClient {
             
                 /* Use the data */
                 if let objectID = parsedJSON.valueForKey(JSONResponseKeys.ObjectID) as? String {
-                    completionHandler(success: true, objectID: objectID, errorString: nil)
+                    completionHandler(success: true, objectID: objectID, error: nil)
                 } else {
-                    completionHandler(success: false, objectID: nil, errorString: "Server Error: StudentLocation not created")
+                    
+                    let userInfo: NSDictionary = [
+                        NSLocalizedDescriptionKey: "StudentLocation not created"]
+                    
+                    var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Server.rawValue,
+                        userInfo: userInfo as [NSObject : AnyObject])
+                    
+                    completionHandler(success: false, objectID: nil, error: errorObject)
                 }
             }
         }
@@ -460,7 +556,7 @@ class UdacityClient {
         
     }
     
-    func putStudentInformation(student: StudentInformation, completionHandler: (success: Bool, errorString: String?) -> Void) {
+    func putStudentInformation(student: StudentInformation, completionHandler: (success: Bool, error: NSError?) -> Void) {
         
         /* Build the URL */
         var objectID = student.objectID!
@@ -491,8 +587,14 @@ class UdacityClient {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
             if error != nil {
-                var errorMessage = "Network Error: " + error.localizedDescription
-                completionHandler(success: false, errorString: errorMessage)
+                
+                let userInfo: NSDictionary = [
+                    NSLocalizedDescriptionKey: error.localizedDescription]
+                
+                var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Network.rawValue,
+                    userInfo: userInfo as [NSObject : AnyObject])
+                
+                completionHandler(success: false, error: errorObject)
             }
             else {
                 /* Parse the data */
@@ -502,9 +604,16 @@ class UdacityClient {
             
                 /* Use the data */
                 if let createdAt = parsedJSON.valueForKey(JSONResponseKeys.UpdatedAt) as? String {
-                    completionHandler(success: true, errorString: nil)
+                    completionHandler(success: true, error: nil)
                 } else {
-                    completionHandler(success: false, errorString: "Server Error: StudentLocation not updated")
+                    
+                    let userInfo: NSDictionary = [
+                        NSLocalizedDescriptionKey: "StudentLocation not updated"]
+                    
+                    var errorObject = NSError(domain: Error.Domain, code: ErrorTypes.Server.rawValue,
+                        userInfo: userInfo as [NSObject : AnyObject])
+                    
+                    completionHandler(success: false, error: errorObject)
                 }
             }
         }

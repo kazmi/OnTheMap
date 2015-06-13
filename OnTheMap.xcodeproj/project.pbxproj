@@ -25,6 +25,7 @@
 		4C8700C41B1DDD5300AA716E /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8700C31B1DDD5300AA716E /* FBSDKLoginKit.framework */; };
 		4C89BAF81B1AB5DF00894B5C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C89BAF71B1AB5DF00894B5C /* LoginViewController.swift */; };
 		4CA9A61A1B1EADDA006584E4 /* InformationPostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA9A6191B1EADDA006584E4 /* InformationPostingViewController.swift */; };
+		4CAF88F81B2C925C00C25442 /* ErrorTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CAF88F71B2C925C00C25442 /* ErrorTypes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		4C8700C31B1DDD5300AA716E /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		4C89BAF71B1AB5DF00894B5C /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4CA9A6191B1EADDA006584E4 /* InformationPostingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InformationPostingViewController.swift; sourceTree = "<group>"; };
+		4CAF88F71B2C925C00C25442 /* ErrorTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorTypes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +161,7 @@
 				4C8700B21B1B9D3100AA716E /* UdacityClient.swift */,
 				4C8700BB1B1C72A900AA716E /* StudentInformation.swift */,
 				4C51E0FF1B2658C000749C55 /* DataModel.swift */,
+				4CAF88F71B2C925C00C25442 /* ErrorTypes.swift */,
 			);
 			name = Udacity;
 			sourceTree = "<group>";
@@ -301,6 +304,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C8700BC1B1C72AA00AA716E /* StudentInformation.swift in Sources */,
+				4CAF88F81B2C925C00C25442 /* ErrorTypes.swift in Sources */,
 				4C8700B31B1B9D3100AA716E /* UdacityClient.swift in Sources */,
 				4CA9A61A1B1EADDA006584E4 /* InformationPostingViewController.swift in Sources */,
 				4C51E1021B2758D300749C55 /* StudentLocationCollectionViewCell.swift in Sources */,

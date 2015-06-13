@@ -70,15 +70,31 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
         self.view.endEditing(true)
         
         if emailTextField.text.isEmpty {
-            self.showErrorView("Client Error: Email Empty")
+            
+            let userInfo: NSDictionary = [
+                NSLocalizedDescriptionKey: "Email Empty"]
+            
+            var errorObject = NSError(domain: "OTMErrorDomain", code: 10,
+                userInfo: userInfo as [NSObject : AnyObject])
+            
+            self.showErrorView(errorObject)
+            
         } else if passwordTextField.text.isEmpty {
-            self.showErrorView("Client Error: Password Empty")
+            
+            let userInfo: NSDictionary = [
+                NSLocalizedDescriptionKey: "Password Empty"]
+            
+            var errorObject = NSError(domain: "OTMErrorDomain", code: 10,
+                userInfo: userInfo as [NSObject : AnyObject])
+            
+            self.showErrorView(errorObject)
+            
         } else {
             
             startLoginAnimation()
             
             UdacityClient.sharedInstance().authenticateWithCompletionHandler(
-                emailTextField.text, password: passwordTextField.text) { (success, errorString) in
+                emailTextField.text, password: passwordTextField.text) { (success, error) in
                     
                 dispatch_async(dispatch_get_main_queue(), {
                     self.stopLoginAnimation()
@@ -88,7 +104,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
                     self.completeLogin()
                 } else {
                     dispatch_async(dispatch_get_main_queue(), {
-                        self.showErrorView(errorString!)
+                        self.showErrorView(error)
                     })
                 }
             }
@@ -107,7 +123,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
             
             let token = FBSDKAccessToken.currentAccessToken().tokenString
             
-            UdacityClient.sharedInstance().authenticateWithCompletionHandler(token) { (success, errorString ) in
+            UdacityClient.sharedInstance().authenticateWithCompletionHandler(token) { (success, error ) in
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.stopLoginAnimation()
@@ -116,9 +132,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
                 if success {
                     self.completeLogin()
                 } else {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.showErrorView(errorString!)
-                    })
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.showErrorView(error)
+                    }
                 }
             }
         }
@@ -188,14 +204,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
 
     //#MARK:- Error View
     
-    func showErrorView(errorString: String, showRetry: Bool = false) {
+    func showErrorView(error: NSError!, showRetry: Bool = false) {
         
-        errorMessageLabel.text = errorString
-        retryButton.hidden = !showRetry
+        self.errorMessageLabel.text = error.localizedDescription
+        self.retryButton.hidden = !showRetry
         
         self.errorViewTopConstraint.constant = 8
         self.errorView.setNeedsUpdateConstraints()
-        
+
         UIView.animateWithDuration(1.0,
             delay: 0.0, usingSpringWithDamping: 0.5,
             initialSpringVelocity: 1.0,

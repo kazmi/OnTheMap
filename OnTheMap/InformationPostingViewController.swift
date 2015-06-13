@@ -183,7 +183,7 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
                 }
                 else {
                     
-                    self.displayErrorMessage(error!)
+                    self.displayErrorMessage(error)
                     
                 }
                 
@@ -204,7 +204,7 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
                 }
                 else {
                     
-                    self.displayErrorMessage(error!)
+                    self.displayErrorMessage(error)
                     
                 }
                 
@@ -213,9 +213,9 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func displayErrorMessage(errorString: String) {
-        
-        self.alertController = UIAlertController(title: nil, message: errorString, preferredStyle: .Alert)
+    func displayErrorMessage(error: NSError!) {
+        let title = ErrorTypes.localizedDescription(ErrorTypes(rawValue: error.code)!)
+        self.alertController = UIAlertController(title: title, message: error.localizedDescription, preferredStyle: .Alert)
         let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in }
         
         let retryAction = UIAlertAction(title: "Retry", style: .Default) { (action) in

@@ -104,7 +104,8 @@ class SLCollectionViewController: UICollectionViewController {
                         
                     } else {
                         
-                        let alertController = UIAlertController(title: nil, message: error,
+                        let title: String =  ErrorTypes.localizedDescription(ErrorTypes(rawValue: error!.code)!)
+                        let alertController = UIAlertController(title: title, message: error!.localizedDescription,
                             preferredStyle: .Alert)
                         
                         let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in

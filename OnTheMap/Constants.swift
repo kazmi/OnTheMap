@@ -18,6 +18,13 @@ extension UdacityClient {
         
     }
     
+    // MARK: - Error Constants
+    struct Error {
+        
+        static let Domain = "OTMErrorDomain"
+        
+    }
+    
     // MARK: - Parameter Keys
     struct ParameterKeys {
         
