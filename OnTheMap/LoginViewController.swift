@@ -22,6 +22,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
     @IBOutlet weak var errorView: UIView!
     @IBOutlet weak var errorViewTopConstraint: NSLayoutConstraint!
     
+    
+    @IBOutlet weak var errorTypeImage: UIImageView!
+    @IBOutlet weak var errorTypeLabel: UILabel!
     @IBOutlet weak var errorMessageLabel: UILabel!
     @IBOutlet weak var retryButton: UIButton!
     
@@ -65,6 +68,51 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
     
     //#MARK:- Login
     
+    // helper
+    
+    func performLogin(email: String, password: String) {
+        
+        startLoginAnimation()
+        
+        UdacityClient.sharedInstance().authenticateWithCompletionHandler(
+            email, password: password) { (success, error) in
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.stopLoginAnimation()
+                })
+                
+                if success {
+                    self.completeLogin()
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.showErrorView(error)
+                    })
+                }
+        }
+    }
+    
+    func performLogin(token: String) {
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            self.startLoginAnimation()
+        })
+        
+        UdacityClient.sharedInstance().authenticateWithCompletionHandler(token) { (success, error ) in
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                self.stopLoginAnimation()
+            })
+            
+            if success {
+                self.completeLogin()
+            } else {
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.showErrorView(error)
+                }
+            }
+        }
+    }
+    
     @IBAction func loginButtonAction(sender: AnyObject) {
         
         self.view.endEditing(true)
@@ -74,7 +122,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
             let userInfo: NSDictionary = [
                 NSLocalizedDescriptionKey: "Email Empty"]
             
-            var errorObject = NSError(domain: "OTMErrorDomain", code: 10,
+            var errorObject = NSError(domain: "OTMErrorDomain", code: ErrorTypes.Client.rawValue,
                 userInfo: userInfo as [NSObject : AnyObject])
             
             self.showErrorView(errorObject)
@@ -84,30 +132,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
             let userInfo: NSDictionary = [
                 NSLocalizedDescriptionKey: "Password Empty"]
             
-            var errorObject = NSError(domain: "OTMErrorDomain", code: 10,
+            var errorObject = NSError(domain: "OTMErrorDomain", code: ErrorTypes.Client.rawValue,
                 userInfo: userInfo as [NSObject : AnyObject])
             
             self.showErrorView(errorObject)
             
         } else {
             
-            startLoginAnimation()
+            performLogin(emailTextField.text, password: passwordTextField.text)
             
-            UdacityClient.sharedInstance().authenticateWithCompletionHandler(
-                emailTextField.text, password: passwordTextField.text) { (success, error) in
-                    
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.stopLoginAnimation()
-                })
-
-                if success {
-                    self.completeLogin()
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.showErrorView(error)
-                    })
-                }
-            }
         }
     }
     
@@ -117,26 +150,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
 
         if((FBSDKAccessToken.currentAccessToken()) != nil) {
             
-            dispatch_async(dispatch_get_main_queue(), {
-                self.startLoginAnimation()
-            })
+            self.performLogin(FBSDKAccessToken.currentAccessToken().tokenString)
             
-            let token = FBSDKAccessToken.currentAccessToken().tokenString
-            
-            UdacityClient.sharedInstance().authenticateWithCompletionHandler(token) { (success, error ) in
-                
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.stopLoginAnimation()
-                })
-                
-                if success {
-                    self.completeLogin()
-                } else {
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.showErrorView(error)
-                    }
-                }
-            }
         }
     }
     
@@ -204,10 +219,27 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
 
     //#MARK:- Error View
     
-    func showErrorView(error: NSError!, showRetry: Bool = false) {
+    func showErrorView(error: NSError!) {
         
+        let errorType = ErrorTypes(rawValue: error.code)
+        var imageName: String?
+        switch (errorType!) {
+        case .Client:
+            imageName = "client"
+        case .Server:
+            imageName = "server"
+        case .Network:
+            imageName = "network"
+            self.retryButton.hidden = false
+        default:
+            imageName = "client"
+        }
+        
+        // the images are taken from the noun project
+        self.errorTypeImage.image = UIImage(named: imageName!)
+        
+        self.errorTypeLabel.text = ErrorTypes.localizedDescription(errorType!)
         self.errorMessageLabel.text = error.localizedDescription
-        self.retryButton.hidden = !showRetry
         
         self.errorViewTopConstraint.constant = 8
         self.errorView.setNeedsUpdateConstraints()
@@ -228,9 +260,36 @@ class LoginViewController: UIViewController, UITextFieldDelegate, FBSDKLoginButt
         self.errorViewTopConstraint.constant += errorView.frame.size.height
         self.errorView.setNeedsUpdateConstraints()
         
+        self.retryButton.hidden = true
+        
         UIView.animateWithDuration(1.0, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
             self.errorView.layoutIfNeeded()
             }, completion: nil)
+    }
+    
+    @IBAction func retryButton(sender: AnyObject) {
+        
+        self.errorViewTopConstraint.constant += errorView.frame.size.height
+        self.errorView.setNeedsUpdateConstraints()
+        
+        self.retryButton.hidden = true
+        
+        UIView.animateWithDuration(1.0, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+            self.errorView.layoutIfNeeded()
+            }, completion: { finished in
+                
+                if((FBSDKAccessToken.currentAccessToken()) != nil) {
+                    
+                    self.performLogin(FBSDKAccessToken.currentAccessToken().tokenString)
+                    
+                } else {
+                    
+                    self.performLogin(self.emailTextField.text, password: self.passwordTextField.text)
+                    
+                }
+                
+            })
+        
     }
     
     //#MARK:- Sign Up

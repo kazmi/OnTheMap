@@ -142,29 +142,77 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6hy-qk-aVG" userLabel="ErrorView">
                                 <rect key="frame" x="0.0" y="210" width="600" height="390"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y2X-sP-YN9" userLabel="Retry">
-                                        <rect key="frame" x="8" y="150" width="46" height="30"/>
-                                        <state key="normal" title="Retry">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                    </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Opps! Something isn't right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vqm-uc-z8C" userLabel="errorMessage">
-                                        <rect key="frame" x="8" y="8" width="211" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Opps! Something isn't right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vqm-uc-z8C" userLabel="errorMessage">
+                                        <rect key="frame" x="30" y="102" width="540" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="KJ7-VW-xlk"/>
+                                        </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="0.98823529409999999" green="0.51372549020000002" blue="0.050980392159999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Baf-kt-uzd" userLabel="OK">
-                                        <rect key="frame" x="8" y="78" width="46" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Baf-kt-uzd" userLabel="OK">
+                                        <rect key="frame" x="175" y="326" width="250" height="44"/>
+                                        <color key="backgroundColor" red="0.93333333330000001" green="0.24313725489999999" blue="0.023529411760000001" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="8ra-Uf-vcS"/>
+                                            <constraint firstAttribute="width" constant="250" id="Sj5-iG-m9Z"/>
+                                        </constraints>
                                         <state key="normal" title="OK">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
                                             <action selector="okButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Bn2-IJ-OXx"/>
                                         </connections>
                                     </button>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="client" translatesAutoresizingMaskIntoConstraints="NO" id="UIO-Lp-q7M">
+                                        <rect key="frame" x="20" y="20" width="50" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="CRO-z2-LIA"/>
+                                            <constraint firstAttribute="height" constant="50" id="u5k-J8-1Kh"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ErrorType" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B7S-gr-xWE">
+                                        <rect key="frame" x="78" y="34" width="514" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="ygZ-B3-fZr"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                        <color key="textColor" red="0.98823529409999999" green="0.51372549020000002" blue="0.050980392159999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y2X-sP-YN9" userLabel="Retry">
+                                        <rect key="frame" x="175" y="274" width="250" height="44"/>
+                                        <color key="backgroundColor" red="0.93333333330000001" green="0.24313725489999999" blue="0.023529411760000001" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="250" id="OFT-p1-dSL"/>
+                                            <constraint firstAttribute="height" constant="44" id="xDt-H6-8L1"/>
+                                        </constraints>
+                                        <state key="normal" title="Retry">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="retryButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="GIf-9e-XKi"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="Vqm-uc-z8C" firstAttribute="leading" secondItem="6hy-qk-aVG" secondAttribute="leading" constant="30" id="1sZ-lY-oWF"/>
+                                    <constraint firstAttribute="bottom" secondItem="Baf-kt-uzd" secondAttribute="bottom" constant="20" id="6PH-xt-svX"/>
+                                    <constraint firstItem="UIO-Lp-q7M" firstAttribute="leading" secondItem="6hy-qk-aVG" secondAttribute="leading" constant="20" id="7Nf-Pc-PLF"/>
+                                    <constraint firstAttribute="trailing" secondItem="Vqm-uc-z8C" secondAttribute="trailing" constant="30" id="9Sq-cI-4ZQ"/>
+                                    <constraint firstItem="Baf-kt-uzd" firstAttribute="top" secondItem="Y2X-sP-YN9" secondAttribute="bottom" constant="8" id="HqI-aI-QVL"/>
+                                    <constraint firstAttribute="centerX" secondItem="Y2X-sP-YN9" secondAttribute="centerX" id="NPS-fe-3TX"/>
+                                    <constraint firstItem="Vqm-uc-z8C" firstAttribute="top" secondItem="UIO-Lp-q7M" secondAttribute="bottom" constant="32" id="Wby-in-DFY"/>
+                                    <constraint firstItem="B7S-gr-xWE" firstAttribute="leading" secondItem="UIO-Lp-q7M" secondAttribute="trailing" constant="8" id="dP6-1U-9d9"/>
+                                    <constraint firstItem="B7S-gr-xWE" firstAttribute="top" secondItem="6hy-qk-aVG" secondAttribute="top" constant="34" id="dcY-XG-q7w"/>
+                                    <constraint firstAttribute="centerX" secondItem="Baf-kt-uzd" secondAttribute="centerX" id="ikU-gq-Kdl"/>
+                                    <constraint firstAttribute="trailing" secondItem="B7S-gr-xWE" secondAttribute="trailing" constant="8" id="uab-cd-rWo"/>
+                                    <constraint firstItem="UIO-Lp-q7M" firstAttribute="top" secondItem="6hy-qk-aVG" secondAttribute="top" constant="20" id="xN1-zN-FjQ"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.9882352941176471" green="0.51372549019607838" blue="0.050980392156862744" alpha="1" colorSpace="calibratedRGB"/>
@@ -188,6 +236,8 @@
                         <outlet property="debugLabel" destination="BMM-R4-34w" id="4V5-4k-zXe"/>
                         <outlet property="emailTextField" destination="Jvp-ed-tnZ" id="eO8-v6-3LR"/>
                         <outlet property="errorMessageLabel" destination="Vqm-uc-z8C" id="BaL-4C-wS0"/>
+                        <outlet property="errorTypeImage" destination="UIO-Lp-q7M" id="5sc-Jv-uLY"/>
+                        <outlet property="errorTypeLabel" destination="B7S-gr-xWE" id="aRO-Lp-f8j"/>
                         <outlet property="errorView" destination="6hy-qk-aVG" id="epE-9w-M52"/>
                         <outlet property="errorViewTopConstraint" destination="rgX-zB-eWH" id="b1i-07-q3j"/>
                         <outlet property="facebookLoginButton" destination="pkN-jw-2zF" id="PD0-WG-ouB"/>
@@ -573,6 +623,7 @@ Are You Studying Today?</string>
         </scene>
     </scenes>
     <resources>
+        <image name="client" width="50" height="50"/>
         <image name="collection" width="30" height="30"/>
         <image name="gear" width="50" height="50"/>
         <image name="map" width="48" height="30"/>
